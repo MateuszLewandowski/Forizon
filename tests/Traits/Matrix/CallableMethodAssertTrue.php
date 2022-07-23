@@ -7,11 +7,11 @@ use InvalidArgumentException;
 use LengthException;
 use RuntimeException;
 
-trait CallableTrait
+trait CallableMethodAssertTrue
 {
     private array $finalized = [];
 
-    private function call(string $function) {
+    private function runCallable(string $function, ?float $parameter = null) {
         $method = strtolower(preg_split('/(?=[A-Z])/', $function)[1]);
         if (!is_callable($method)) {
             /**
@@ -20,9 +20,9 @@ trait CallableTrait
             throw new InvalidArgumentException();
         }
         $basic = Matrix::randomize(3, 3, 0.01, 1.0);
-        $mutated = $basic->{$method}();
+        $mutated = $basic->{$method}($parameter);
 
-        $this->test($method, $basic, $mutated);
+        $this->test($method, $basic, $mutated, $parameter);
     }
 
     /**
@@ -31,17 +31,19 @@ trait CallableTrait
     * @param Matrix $mutated
     * @return void
     */
-   private function test(callable $method, Matrix $basic, Matrix $mutated) {
-       $flag = true;
+   private function test(callable $method, Matrix $basic, Matrix $mutated, ?float $parameter = null) {
        for ($i = 0; $i < $basic->rows; $i++) {
            for ($j = 0; $j < $mutated->columns; $j++) {
-               if ($mutated->data[$i][$j] !== $method($basic->data[$i][$j])) {
-                   $flag = false;
-               }
+                $flag = $parameter !== null
+                    ? $mutated->data[$i][$j] === $method($basic->data[$i][$j], $parameter)
+                    : $mutated->data[$i][$j] === $method($basic->data[$i][$j]);
+                if (!$flag) {
+                    $this->assertTrue(false);
+                }
            }
        }
        $this->finalized[] = $method;
-       $this->assertTrue($flag);
+       $this->assertTrue(true);
    }
 
     /**
