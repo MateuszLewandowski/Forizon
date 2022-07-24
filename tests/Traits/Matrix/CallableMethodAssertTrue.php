@@ -21,17 +21,6 @@ trait CallableMethodAssertTrue
         if (!is_callable($method)) {
             throw new InvalidArgumentException();
         }
-        $this->test($method, $parameter);
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param callable $method
-     * @param float|null $parameter
-     * @return void
-     */
-    private function test(callable $method, ?float $parameter = null): void {
         $basic = Matrix::fill(3, 3, 0.01, 1.0);
         $mutated = $basic->{$method}($parameter);
         for ($i = 0; $i < $basic->rows; $i++) {

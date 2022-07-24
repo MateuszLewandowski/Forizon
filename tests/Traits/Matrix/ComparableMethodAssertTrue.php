@@ -4,9 +4,14 @@ namespace Tests\Traits\Matrix;
 
 use BadMethodCallException;
 use App\Forizon\Interfaces\Core\Tensor;
+use InvalidArgumentException;
 
-trait MatrixableMethodAssertTrue
+trait ComparableMethodAssertTrue
 {
+    private $unset = [
+        'test', 'Expects', 'Success', 'Failure'
+    ];
+
     /**
      * Undocumented function
      *
@@ -15,8 +20,14 @@ trait MatrixableMethodAssertTrue
      * @param float|null $parameter
      * @return void
      */
-    private function runMatrixable(string $function, Tensor $first, Tensor|float $second, ?float $expected = null, ?float $parameter = null): void {
-        $method = strtolower(preg_split('/(?=[A-Z])/', $function)[1]);
+    private function runComparable(string $function, Tensor $first, Tensor|float $second, float $expected, ?float $parameter = null): void {
+        $parts = preg_split('/(?=[A-Z])/', $function);
+        foreach ($parts as $key => $part) {
+            if (in_array($part, $this->unset)) {
+                unset($parts[$key]);
+            }
+        }
+        $method = implode('', $parts);
         if (!method_exists($first, $method)) {
             throw new BadMethodCallException();
         }

@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace App\Forizon\Data\Collections;
+namespace App\Forizon\Data\Generators;
 
 class Blob {
 
