@@ -343,12 +343,6 @@ class Matrix implements Matrixable, Tensor {
         return self::fastCreate($data);
     }
 
-    /**
-     * @todo
-     *
-     * @param Matrix $matrix
-     * @return self
-     */
     public function isEqualMatrix(Matrix $matrix): self {
         TensorValidator::areIdentical($this->shape(), $matrix->shape());
         for ($i = 0; $i < $this->rows; $i++) {
@@ -367,9 +361,6 @@ class Matrix implements Matrixable, Tensor {
         }
         return self::fastCreate($data);
     }
-
-
-
     public function isGreaterMatrix(Matrix $matrix): self {
         TensorValidator::areIdentical($this->shape(), $matrix->shape());
         for ($i = 0; $i < $this->rows; $i++) {
@@ -414,7 +405,7 @@ class Matrix implements Matrixable, Tensor {
      * Arithmetic by column vector
      */
     public function addColumnVector(ColumnVector $columnVector): self {
-        TensorValidator::areIdentical($this->columns, $columnVector->columns);
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] + $columnVector->data[$i];
@@ -424,7 +415,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function subtractColumnVector(ColumnVector $columnVector): self {
-        TensorValidator::areIdentical($this->columns, $columnVector->columns);
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] - $columnVector->data[$i];
@@ -434,7 +425,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function multiplyColumnVector(ColumnVector $columnVector): self {
-        TensorValidator::areIdentical($this->columns, $columnVector->columns);
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] * $columnVector->data[$i];
@@ -444,7 +435,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function divideColumnVector(ColumnVector $columnVector): self {
-        TensorValidator::areIdentical($this->columns, $columnVector->columns);
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] / $columnVector->data[$i];
@@ -453,8 +444,29 @@ class Matrix implements Matrixable, Tensor {
         return self::fastCreate($data);
     }
 
+
+    public function isEqualColumnVector(ColumnVector $columnVector): self {
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
+        for ($i = 0; $i < $this->rows; $i++) {
+            for ($j = 0; $j < $this->columns; $j++) {
+                $data[$i][$j] = $this->data[$i][$j] === $columnVector->data[$i] ? 1.0 : 0.0;
+            }
+        }
+        return self::fastCreate($data);
+    }
+
+    public function isNotEqualColumnVector(ColumnVector $columnVector): self {
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
+        for ($i = 0; $i < $this->rows; $i++) {
+            for ($j = 0; $j < $this->columns; $j++) {
+                $data[$i][$j] = $this->data[$i][$j] !== $columnVector->data[$i] ? 1.0 : 0.0;
+            }
+        }
+        return self::fastCreate($data);
+    }
+
     public function isGreaterColumnVector(ColumnVector $columnVector): self {
-        TensorValidator::areIdentical($this->columns, $columnVector->columns);
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] > $columnVector->data[$i] ? 1.0 : 0.0;
@@ -464,7 +476,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function isGreaterOrEqualColumnVector(ColumnVector $columnVector): self {
-        TensorValidator::areIdentical($this->columns, $columnVector->columns);
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] >= $columnVector->data[$i] ? 1.0 : 0.0;
@@ -474,7 +486,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function isLessColumnVector(ColumnVector $columnVector): self {
-        TensorValidator::areIdentical($this->columns, $columnVector->columns);
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] < $columnVector->data[$i] ? 1.0 : 0.0;
@@ -484,7 +496,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function isLessOrEqualColumnVector(ColumnVector $columnVector): self {
-        TensorValidator::areIdentical($this->columns, $columnVector->columns);
+        TensorValidator::areIdentical($this->rows, $columnVector->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] <= $columnVector->data[$i] ? 1.0 : 0.0;
@@ -497,7 +509,7 @@ class Matrix implements Matrixable, Tensor {
      * Arithmetic by row vector
      */
     public function addRowVector(RowVector $rowVector): self {
-        TensorValidator::areIdentical($this->rows, $rowVector->rows);
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] + $rowVector->data[$j];
@@ -507,7 +519,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function subtractRowVector(RowVector $rowVector): self {
-        TensorValidator::areIdentical($this->rows, $rowVector->rows);
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] - $rowVector->data[$j];
@@ -517,7 +529,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function multiplyRowVector(RowVector $rowVector): self {
-        TensorValidator::areIdentical($this->rows, $rowVector->rows);
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] * $rowVector->data[$j];
@@ -527,7 +539,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function divideRowVector(RowVector $rowVector): self {
-        TensorValidator::areIdentical($this->rows, $rowVector->rows);
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] / $rowVector->data[$j];
@@ -536,8 +548,28 @@ class Matrix implements Matrixable, Tensor {
         return self::fastCreate($data);
     }
 
+    public function isEqualRowVector(RowVector $rowVector): self {
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
+        for ($i = 0; $i < $this->rows; $i++) {
+            for ($j = 0; $j < $this->columns; $j++) {
+                $data[$i][$j] = $this->data[$i][$j] === $rowVector->data[$i] ? 1.0 : 0.0;
+            }
+        }
+        return self::fastCreate($data);
+    }
+
+    public function isNotEqualRowVector(RowVector $rowVector): self {
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
+        for ($i = 0; $i < $this->rows; $i++) {
+            for ($j = 0; $j < $this->columns; $j++) {
+                $data[$i][$j] = $this->data[$i][$j] !== $rowVector->data[$i] ? 1.0 : 0.0;
+            }
+        }
+        return self::fastCreate($data);
+    }
+
     public function isGreaterRowVector(RowVector $rowVector): self {
-        TensorValidator::areIdentical($this->rows, $rowVector->rows);
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] > $rowVector->data[$i] ? 1.0 : 0.0;
@@ -547,7 +579,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function isGreaterOrEqualRowVector(RowVector $rowVector): self {
-        TensorValidator::areIdentical($this->rows, $rowVector->rows);
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] >= $rowVector->data[$i] ? 1.0 : 0.0;
@@ -557,7 +589,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function isLessRowVector(RowVector $rowVector): self {
-        TensorValidator::areIdentical($this->rows, $rowVector->rows);
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] < $rowVector->data[$i] ? 1.0 : 0.0;
@@ -567,7 +599,7 @@ class Matrix implements Matrixable, Tensor {
     }
 
     public function isLessOrEqualRowVector(RowVector $rowVector): self {
-        TensorValidator::areIdentical($this->rows, $rowVector->rows);
+        TensorValidator::areIdentical($this->columns, $rowVector->columns);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] <= $rowVector->data[$i] ? 1.0 : 0.0;
@@ -611,6 +643,24 @@ class Matrix implements Matrixable, Tensor {
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $this->columns; $j++) {
                 $data[$i][$j] = $this->data[$i][$j] / (float) $scalar;
+            }
+        }
+        return self::fastCreate($data);
+    }
+
+    public function isEqualScalar(float|int $scalar): self {
+        for ($i = 0; $i < $this->rows; $i++) {
+            for ($j = 0; $j < $this->columns; $j++) {
+                $data[$i][$j] = $this->data[$i][$j] === $scalar ? 1.0 : 0.0;
+            }
+        }
+        return self::fastCreate($data);
+    }
+
+    public function isNotEqualScalar(float|int $scalar): self {
+        for ($i = 0; $i < $this->rows; $i++) {
+            for ($j = 0; $j < $this->columns; $j++) {
+                $data[$i][$j] = $this->data[$i][$j] !== $scalar ? 1.0 : 0.0;
             }
         }
         return self::fastCreate($data);

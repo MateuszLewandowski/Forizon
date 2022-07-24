@@ -1,7 +1,7 @@
-<?php 
+<?php
 
 namespace App\Forizon\Interfaces\Core\Functions;
 
-interface CostInterface {
+interface Cost {
     public function evaluation();
 }

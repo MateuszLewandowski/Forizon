@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Log;
 class Tensor
 {
     /**
+     * Undocumented function
+     *
+     * @param mixed $first
+     * @param mixed $second
+     * @return void
      * @throws InvalidArgumentException
      */
     public static function areIdentical(mixed $first, mixed $second): void {

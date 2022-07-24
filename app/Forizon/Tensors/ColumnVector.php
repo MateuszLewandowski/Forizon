@@ -44,7 +44,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
         }
     }
 
-     /**
+    /**
      * @param callable $callback
      * @param mixed ...$parameters
      * @return array
