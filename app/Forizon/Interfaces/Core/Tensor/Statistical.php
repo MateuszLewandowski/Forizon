@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Forizon\Interfaces\Core\Tensor;
 

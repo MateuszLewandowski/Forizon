@@ -162,7 +162,7 @@ class Matrix implements Matrixable, Tensor {
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Collection
      */
-    public function sum(): mixed {
+    public function sum(): ColumnVector {
         return ColumnVector::fastCreate(
             array_map('array_' . __FUNCTION__, $this->data)
         );
@@ -222,7 +222,7 @@ class Matrix implements Matrixable, Tensor {
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Statistical
      */
-    public function mean(): mixed {
+    public function mean(): ColumnVector {
         return $this->sum()->divideScalar($this->columns);
     }
 
@@ -722,7 +722,9 @@ class Matrix implements Matrixable, Tensor {
                 case 'float':
                 case 'double':
                 case 'integer':
-                    return $this->{$method . 'Scalar'}($tensor);
+                    if (method_exists($this, $method . 'Scalar')) {
+                        return $this->{$method . 'Scalar'}();
+                    }
             }
             throw new InvalidArgumentException('Bad type of data recived', __CLASS__);
         } catch (InvalidArgumentException $e) {

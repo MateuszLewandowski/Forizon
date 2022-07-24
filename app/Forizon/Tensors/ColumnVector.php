@@ -32,7 +32,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
                     if (is_array($value) or is_object($value)) {
                         throw new InvalidArgumentException('A Vector was expected, a matrix was obtained', Response::HTTP_BAD_REQUEST);
                     }
-                    $value = !is_float($value) ?: (float) $value;
+                    $value = (float) $value;
                 }
             }
             $this->columns = 1;
@@ -73,12 +73,12 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
         try {
             switch (gettype($tensor)) {
                 case 'object':
-                    return $tensor instanceof Matrix ?: $this->{$method . 'Matrix'}();
-                    return $tensor instanceof Vector ?: $this->{$method . 'Vector'}();
+                    return $tensor instanceof Matrix ?: $this->{$method . 'Matrix'}($tensor);
+                    return $tensor instanceof Vector ?: $this->{$method . 'Vector'}($tensor);
                 case 'float':
                 case 'double':
                 case 'integer':
-                    return $this->{$method . 'Scalar'}();
+                    return $this->{$method . 'Scalar'}($tensor);
             }
             throw new InvalidArgumentException('Bad type of data recived', __CLASS__);
         } catch (InvalidArgumentException $e) {
@@ -327,45 +327,45 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Arithmetical
      */
-    public function add(mixed $tensor): self { return $this->run(__METHOD__, $tensor); }
-    public function subtract(mixed $tensor): self { return $this->run(__METHOD__, $tensor); }
-    public function multiply(mixed $tensor): self { return $this->run(__METHOD__, $tensor); }
-    public function divide(mixed $tensor): self { return $this->run(__METHOD__, $tensor); }
+    public function add(mixed $tensor): self { return $this->run(__FUNCTION__, $tensor); }
+    public function subtract(mixed $tensor): self { return $this->run(__FUNCTION__, $tensor); }
+    public function multiply(mixed $tensor): self { return $this->run(__FUNCTION__, $tensor); }
+    public function divide(mixed $tensor): self { return $this->run(__FUNCTION__, $tensor); }
 
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Comparable
      */
-    public function isGreater(mixed $tensor): self { return $this->run(__METHOD__, $tensor); }
-    public function isGreaterOrEqual(mixed $tensor): self { return $this->run(__METHOD__, $tensor); }
-    public function isLess(mixed $tensor): self { return $this->run(__METHOD__, $tensor); }
-    public function isLessOrEqual(mixed $tensor): self { return $this->run(__METHOD__, $tensor); }
+    public function isGreater(mixed $tensor): self { return $this->run(__FUNCTION__, $tensor); }
+    public function isGreaterOrEqual(mixed $tensor): self { return $this->run(__FUNCTION__, $tensor); }
+    public function isLess(mixed $tensor): self { return $this->run(__FUNCTION__, $tensor); }
+    public function isLessOrEqual(mixed $tensor): self { return $this->run(__FUNCTION__, $tensor); }
 
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Algebric
      */
     public function abs(): self {
-        return self::fastCreate($this->map(__METHOD__));
+        return self::fastCreate($this->map(__FUNCTION__));
     }
     public function square(): self {
-        return self::fastCreate($this->map(__METHOD__));
+        return self::fastCreate($this->map(__FUNCTION__));
     }
     public function sqrt(): self {
-        return self::fastCreate($this->map(__METHOD__));
+        return self::fastCreate($this->map(__FUNCTION__));
     }
     public function exp(): self {
-        return self::fastCreate($this->map(__METHOD__));
+        return self::fastCreate($this->map(__FUNCTION__));
     }
     public function log(float $base = M_E): self {
-        return self::fastCreate($this->map(__METHOD__, $base));
+        return self::fastCreate($this->map(__FUNCTION__, $base));
     }
     public function round(int $precision = 0): self {
-        return self::fastCreate($this->map(__METHOD__, $precision));
+        return self::fastCreate($this->map(__FUNCTION__, $precision));
     }
     public function floor(): self {
-        return self::fastCreate($this->map(__METHOD__));
+        return self::fastCreate($this->map(__FUNCTION__));
     }
     public function ceil(): self {
-        return self::fastCreate($this->map(__METHOD__));
+        return self::fastCreate($this->map(__FUNCTION__));
     }
     public function negate(): self {
         return self::fastCreate($this->map(function ($value) { return -$value; }));
@@ -374,12 +374,12 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Trigonometric
      */
-    public function sin(): mixed { return $this->map(__METHOD__); }
-    public function asin(): mixed { return $this->map(__METHOD__); }
-    public function cos(): mixed { return $this->map(__METHOD__); }
-    public function acos(): mixed { return $this->map(__METHOD__); }
-    public function tan(): mixed { return $this->map(__METHOD__); }
-    public function atan(): mixed { return $this->map(__METHOD__); }
+    public function sin(): mixed { return $this->map(__FUNCTION__); }
+    public function asin(): mixed { return $this->map(__FUNCTION__); }
+    public function cos(): mixed { return $this->map(__FUNCTION__); }
+    public function acos(): mixed { return $this->map(__FUNCTION__); }
+    public function tan(): mixed { return $this->map(__FUNCTION__); }
+    public function atan(): mixed { return $this->map(__FUNCTION__); }
 
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Arithmetical

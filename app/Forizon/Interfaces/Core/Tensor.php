@@ -6,7 +6,7 @@ use App\Forizon\Interfaces\Core\Tensor\{
     Arrayable, Arithmetical, Algebraic, Trigonometric, Statistical, Collection
 };
 
-interface Tensor extends Arrayable, Arithmetical, Algebraic, Trigonometric, Statistical {
+interface Tensor extends Arrayable, Arithmetical, Algebraic, Trigonometric, Statistical, Collection {
     public function shape(): array;
     public function size(): int;
 }

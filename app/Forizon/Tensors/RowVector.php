@@ -73,12 +73,21 @@ class RowVector extends Vector implements Vectorable, Tensor  {
         try {
             switch (gettype($tensor)) {
                 case 'object':
-                    return $tensor instanceof Matrix ?: $this->{$method . 'Matrix'}();
-                    return $tensor instanceof Vector ?: $this->{$method . 'Vector'}();
+                    if ($tensor instanceof Matrix and method_exists($this, $method . 'Matrix')) {
+                        $this->{$method . 'Matrix'}($tensor);
+                    }
+                    if ($tensor instanceof ColumnVector and method_exists($this, $method . 'ColumnVector')) {
+                        $this->{$method . 'ColumnVector'}($tensor);
+                    }
+                    if ($tensor instanceof RowVector and method_exists($this, $method . 'RowVector')) {
+                        $this->{$method . 'RowVector'}($tensor);
+                    }
                 case 'float':
                 case 'double':
                 case 'integer':
-                    return $this->{$method . 'Scalar'}();
+                    if (method_exists($this, $method . 'Scalar')) {
+                        return $this->{$method . 'Scalar'}();
+                    }
             }
             throw new InvalidArgumentException('Bad type of data recived', __CLASS__);
         } catch (InvalidArgumentException $e) {
