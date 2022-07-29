@@ -11,7 +11,7 @@ class TensorableTest extends TestCase
         1.0, 1.0, 1.0
     ];
 
-    public function testCreateRowVectorWithSymmetricDataExpectsSuccess()
+    public function testCreateRowVectorExpectsSuccess()
     {
         $rowVector = RowVector::create($this->data);
         $this->assertTrue(
@@ -22,7 +22,7 @@ class TensorableTest extends TestCase
         );
     }
 
-    public function testFastCreateRowVectorWithSymmetricDataExpectsSuccess()
+    public function testFastCreateRowVectorExpectsSuccess()
     {
         $rowVector = RowVector::fastCreate($this->data);
         $this->assertTrue(

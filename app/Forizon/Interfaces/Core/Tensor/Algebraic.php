@@ -2,8 +2,8 @@
 
 namespace App\Forizon\Interfaces\Core\Tensor;
 
-interface Algebraic {
-
+interface Algebraic
+{
     public function abs(): mixed;
     public function sqrt(): mixed;
     public function exp(): mixed;

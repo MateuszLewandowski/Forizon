@@ -241,6 +241,19 @@ abstract class Vector {
         return $data;
     }
 
+    public function _isEqualScalar(float|int $scalar): array {
+        for ($i = 0; $i < $this->length; $i++) {
+            $data[] = $this->data[$i] === $scalar ? 1.0 : 0.0;
+        }
+        return $data;
+    }
+    public function _isNotEqualScalar(float|int $scalar): array {
+        for ($i = 0; $i < $this->length; $i++) {
+            $data[] = $this->data[$i] !== $scalar ? 1.0 : 0.0;
+        }
+        return $data;
+    }
+
     public function _isGreaterScalar(float|int $scalar): array {
         for ($i = 0; $i < $this->length; $i++) {
             $data[] = $this->data[$i] > $scalar ? 1.0 : 0.0;

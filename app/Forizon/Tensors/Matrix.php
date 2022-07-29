@@ -953,7 +953,7 @@ class Matrix implements Matrixable, Tensor {
         }
     }
 
-    private static final function randomize(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2): array {
+    private static function randomize(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2): array {
         try {
             if ($rows < 1 or $columns < 1) {
                 throw new InvalidArgumentException('', Response::HTTP_BAD_REQUEST);

@@ -215,7 +215,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor
 
     public function divideVector(Vector $vector): self {
         TensorValidator::areIdentical($this->length, $vector->length);
-        return self::fastCreate(parent::_multiplyVector($vector));
+        return self::fastCreate(parent::_divideVector($vector));
     }
 
     public function isEqualVector(Vector $vector): self {
@@ -244,7 +244,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor
     }
 
     public function isLessOrEqualVector(Vector $vector): self {
-        TensorValidator::areIdentical($this->rows, $vector->rows);
+        TensorValidator::areIdentical($this->length, $vector->length);
         return self::fastCreate(parent::_isLessOrEqualVector($vector));
     }
 
@@ -265,6 +265,14 @@ class ColumnVector extends Vector implements Vectorable, Tensor
 
     public function divideScalar(float|int $scalar): self {
         return self::fastCreate(parent::_divideScalar($scalar));
+    }
+
+    public function isEqualScalar(float|int $scalar): self {
+        return self::fastCreate(parent::_isEqualScalar($scalar));
+    }
+
+    public function isNotEqualScalar(float|int $scalar): self {
+        return self::fastCreate(parent::_isNotEqualScalar($scalar));
     }
 
     public function isGreaterScalar(float|int $scalar): self {
@@ -306,7 +314,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor
         return self::fastCreate($this->map(__FUNCTION__));
     }
     public function square(): self {
-        return self::fastCreate($this->map(__FUNCTION__));
+        return $this->multiplyVector($this);
     }
     public function sqrt(): self {
         return self::fastCreate($this->map(__FUNCTION__));
@@ -327,18 +335,18 @@ class ColumnVector extends Vector implements Vectorable, Tensor
         return self::fastCreate($this->map(__FUNCTION__));
     }
     public function negate(): self {
-        return self::fastCreate($this->map(function ($value) { return -$value; }));
+        return self::fastCreate($this->map(fn ($value) => -$value));
     }
 
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Trigonometric
      */
-    public function sin(): mixed { return $this->map(__FUNCTION__); }
-    public function asin(): mixed { return $this->map(__FUNCTION__); }
-    public function cos(): mixed { return $this->map(__FUNCTION__); }
-    public function acos(): mixed { return $this->map(__FUNCTION__); }
-    public function tan(): mixed { return $this->map(__FUNCTION__); }
-    public function atan(): mixed { return $this->map(__FUNCTION__); }
+    public function sin(): mixed { return self::fastCreate($this->map(__FUNCTION__)); }
+    public function asin(): mixed { return self::fastCreate($this->map(__FUNCTION__)); }
+    public function cos(): mixed { return self::fastCreate($this->map(__FUNCTION__)); }
+    public function acos(): mixed { return self::fastCreate($this->map(__FUNCTION__)); }
+    public function tan(): mixed { return self::fastCreate($this->map(__FUNCTION__)); }
+    public function atan(): mixed { return self::fastCreate($this->map(__FUNCTION__)); }
 
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Arithmetical

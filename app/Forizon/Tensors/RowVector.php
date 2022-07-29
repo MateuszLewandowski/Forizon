@@ -258,6 +258,14 @@ class RowVector extends Vector implements Vectorable, Tensor {
         return self::fastCreate(parent::_divideScalar($scalar));
     }
 
+    public function isEqualScalar(float|int $scalar): self {
+        return self::fastCreate(parent::_isEqualScalar($scalar));
+    }
+
+    public function isNotEqualScalar(float|int $scalar): self {
+        return self::fastCreate(parent::_isNotEqualScalar($scalar));
+    }
+
     public function isGreaterScalar(float|int $scalar): self {
         return self::fastCreate(parent::_isGreaterScalar($scalar));
     }
@@ -320,7 +328,7 @@ class RowVector extends Vector implements Vectorable, Tensor {
         return self::fastCreate($this->map(__FUNCTION__));
     }
     public function negate(): self {
-        return self::fastCreate($this->map(function ($value) { return -$value; }));
+        return self::fastCreate($this->map(fn ($value) => -$value));
     }
 
     /**
@@ -479,7 +487,7 @@ class RowVector extends Vector implements Vectorable, Tensor {
         }
     }
 
-    public static function fillRandomize(int $length, int $from = 1, int $to = 1, int $precision = 2): self {
+    public static function fillRandomize(int $length, int $from = -1, int $to = 1, int $precision = 2): self {
         try {
             return new self(parent::randomize($length, $from, $to, $precision), true);
         } catch (InvalidArgumentException $e) {
