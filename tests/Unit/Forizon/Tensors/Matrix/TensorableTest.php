@@ -101,7 +101,7 @@ class TensorableTest extends TestCase
 
     public function testRandomizeExpectsSuccess()
     {
-        $matrix = Matrix::randomize(3, 3, -1, 1, 2);
+        $matrix = Matrix::fillRandomize(3, 3, -1, 1, 2);
         $is_randomized = true;
         foreach ($matrix->data as $row) {
             foreach ($row as $value) {

@@ -17,16 +17,16 @@ class ArithmeticalWithColumnVectorTest extends TestCase
     private float $first = 2.0;
     private float $second = 3.0;
 
-    public function testAddMatrixExpectsSuccess() {
+    public function testAddColumnVectorExpectsSuccess() {
         $this->runMatrixable(__FUNCTION__, Matrix::fill(3, 3, $this->first), ColumnVector::fill(3, $this->second), $this->first + $this->second);
     }
-    public function testSubtractMatrixExpectsSuccess() {
+    public function testSubtractColumnVectorExpectsSuccess() {
         $this->runMatrixable(__FUNCTION__, Matrix::fill(3, 3, $this->first), ColumnVector::fill(3, $this->second), $this->first - $this->second);
     }
-    public function testMultiplyMatrixExpectsSuccess() {
+    public function testMultiplyColumnVectorExpectsSuccess() {
         $this->runMatrixable(__FUNCTION__, Matrix::fill(3, 3, $this->first), ColumnVector::fill(3, $this->second), $this->first * $this->second);
     }
-    public function testDivideMatrixExpectsSuccess() {
+    public function testDivideColumnVectorExpectsSuccess() {
         $this->runMatrixable(__FUNCTION__, Matrix::fill(3, 3, $this->first), ColumnVector::fill(3, $this->second), $this->first / $this->second);
     }
 }

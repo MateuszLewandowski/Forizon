@@ -22,7 +22,7 @@ class CollectionTest extends TestCase
 
     public function testMinExpectsSuccess()
     {
-        $columnVector = Matrix::randomizeRequireFrom(3, 3, 1.0, 10.0)->min();
+        $columnVector = Matrix::fillRandomizeRequireFrom(3, 3, 1, 10)->min();
         $is_minimized = true;
         foreach ($columnVector->data as $value) {
             if ($value < 1.0) {
@@ -34,7 +34,7 @@ class CollectionTest extends TestCase
 
     public function testMaxExpectsSuccess()
     {
-        $columnVector = Matrix::randomizeRequireTo(3, 3, 1.0, 10.0)->max();
+        $columnVector = Matrix::fillRandomizeRequireTo(3, 3, 1.0, 10.0)->max();
         $is_maximized = true;
         foreach ($columnVector->data as $value) {
             if ($value > 10.0) {
@@ -46,11 +46,11 @@ class CollectionTest extends TestCase
 
     public function testLowerRangeExpectsSuccess()
     {
-        $matrix = Matrix::randomizeRequireFrom(3, 3, 0.1, 10.0)->lowerRange(1.0);
+        $matrix = Matrix::fillRandomizeRequireFrom(3, 3, 1, 10)->lowerRange(2.0);
         $is_lower_ranged = true;
         foreach ($matrix->data as $row) {
             foreach ($row as $value) {
-                if ($value < 1.0) {
+                if ($value < 2.0) {
                     $is_lower_ranged = false;
                 }
             }
@@ -60,7 +60,7 @@ class CollectionTest extends TestCase
 
     public function testUpperRangeExpectsSuccess()
     {
-        $matrix = Matrix::randomizeRequireTo(3, 3, 1.0, 10.1)->upperRange(10.0);
+        $matrix = Matrix::fillRandomizeRequireTo(3, 3, 1, 11)->upperRange(10.0);
         $is_upper_ranged = true;
         foreach ($matrix->data as $row) {
             foreach ($row as $value) {
@@ -74,7 +74,7 @@ class CollectionTest extends TestCase
 
     public function testRangeExpectsSuccess()
     {
-        $matrix = Matrix::randomize(3, 3, 1.0, 10.0)->range(2.0, 9.0);
+        $matrix = Matrix::fillRandomize(3, 3, 1, 10)->range(2.0, 9.0);
         $is_ranged = true;
         foreach ($matrix->data as $row) {
             foreach ($row as $value) {
