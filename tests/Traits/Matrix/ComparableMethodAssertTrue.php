@@ -4,7 +4,7 @@ namespace Tests\Traits\Matrix;
 
 use BadMethodCallException;
 use App\Forizon\Interfaces\Core\Tensor;
-use InvalidArgumentException;
+use App\Forizon\Tensors\Matrix;
 
 trait ComparableMethodAssertTrue
 {
@@ -20,20 +20,20 @@ trait ComparableMethodAssertTrue
      * @param float|null $parameter
      * @return void
      */
-    private function runComparable(string $function, Tensor $first, Tensor|float $second, float $expected, ?float $parameter = null): void {
+    private function runComparable(string $function, Matrix $first, Tensor|float $second, float $expected, ?float $parameter = null): void {
         $parts = preg_split('/(?=[A-Z])/', $function);
         foreach ($parts as $key => $part) {
             if (in_array($part, $this->unset)) {
                 unset($parts[$key]);
             }
         }
-        $method = implode('', $parts);
+        $method = lcfirst(implode('', array_merge($parts, [$this->accessor])));
         if (!method_exists($first, $method)) {
             throw new BadMethodCallException();
         }
         $result = $parameter !== null
-            ? $first->{$method . $this->accessor}($second)
-            : $first->{$method . $this->accessor}($second, $parameter);
+            ? $first->{$method}($second)
+            : $first->{$method}($second, $parameter);
         for ($i = 0; $i < $first->rows; $i++) {
             for ($j = 0; $j < $first->columns; $j++) {
                 if ($result->data[$i][$j] !== $expected) {

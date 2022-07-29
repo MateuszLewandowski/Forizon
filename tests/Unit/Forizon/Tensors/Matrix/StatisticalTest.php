@@ -24,14 +24,13 @@ class StatisticalTest extends TestCase
 
     public function testVarianceExpectsSuccess()
     {
-        $basic = Matrix::randomize(32, 32, 0.01, 10.0);
+        $basic = Matrix::fillRandomize(32, 32, 1, 10);
         $mean = $basic->mean();
         $mutated = $basic->variance($mean);
         $basic = $basic->subtractColumnVector($mean)
             ->square()
             ->sum()
             ->divide($basic->rows);
-
         $flag = true;
         for ($i = 0; $i < $basic->rows; $i++) {
             if ($basic->data[$i] !== $mutated->data[$i]) {
@@ -44,7 +43,7 @@ class StatisticalTest extends TestCase
     public function testQuantileExpectsSuccess()
     {
         $q = .5;
-        $basic = Matrix::randomize(32, 32, 0.01, 10.0);
+        $basic = Matrix::fillRandomize(32, 32, 1, 10);
         $mutated = $basic->quantile($q);
         $x = $q * ($basic->columns - 1) + 1;
             $y = (int) $x;

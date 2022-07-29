@@ -15,16 +15,16 @@ class ArithmeticalWithScalarTest extends TestCase
     private float $first = 2.0;
     private float $second = 3.0;
 
-    public function testAddMatrixExpectsSuccess() {
+    public function testAddScalarExpectsSuccess() {
         $this->runMatrixable(__FUNCTION__, Matrix::fill(3, 3, $this->first), $this->second, $this->first + $this->second);
     }
-    public function testSubtractMatrixExpectsSuccess() {
+    public function testSubtractScalarExpectsSuccess() {
         $this->runMatrixable(__FUNCTION__, Matrix::fill(3, 3, $this->first), $this->second, $this->first - $this->second);
     }
-    public function testMultiplyMatrixExpectsSuccess() {
+    public function testMultiplyScalarExpectsSuccess() {
         $this->runMatrixable(__FUNCTION__, Matrix::fill(3, 3, $this->first), $this->second, $this->first * $this->second);
     }
-    public function testDivideMatrixExpectsSuccess() {
+    public function testDivideScalarExpectsSuccess() {
         $this->runMatrixable(__FUNCTION__, Matrix::fill(3, 3, $this->first), $this->second, $this->first / $this->second);
     }
 }

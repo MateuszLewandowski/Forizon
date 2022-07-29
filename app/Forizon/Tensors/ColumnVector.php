@@ -14,8 +14,8 @@ use App\Forizon\Abstracts\Tensors\Vector;
 use App\Forizon\Validators\Tensor as TensorValidator;
 use App\Forizon\Interfaces\Core\Tensor\Vectorable;
 
-class ColumnVector extends Vector implements Vectorable, Tensor {
-
+class ColumnVector extends Vector implements Vectorable, Tensor
+{
     /**
      * @param array[] $data
      * @param bool $skip = false
@@ -27,6 +27,9 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
                 throw new InvalidArgumentException('Column vector cannot be empty.', Response::HTTP_BAD_REQUEST);
             }
             $data = array_values($data);
+            $this->columns = 1;
+            $this->rows = count($data);
+            $this->length = $this->rows;
             if (!$skip) {
                 foreach ($data as &$value) {
                     if (is_array($value) or is_object($value)) {
@@ -35,8 +38,6 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
                     $value = (float) $value;
                 }
             }
-            $this->columns = 1;
-            $this->rows = count($data);
             $this->data = $data;
         } catch (InvalidArgumentException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
@@ -73,12 +74,21 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
         try {
             switch (gettype($tensor)) {
                 case 'object':
-                    return $tensor instanceof Matrix ?: $this->{$method . 'Matrix'}($tensor);
-                    return $tensor instanceof Vector ?: $this->{$method . 'Vector'}($tensor);
+                    if ($tensor instanceof Matrix and method_exists($this, $method . 'Matrix')) {
+                        $this->{$method . 'Matrix'}($tensor);
+                    }
+                    if ($tensor instanceof ColumnVector and method_exists($this, $method . 'ColumnVector')) {
+                        $this->{$method . 'ColumnVector'}($tensor);
+                    }
+                    if ($tensor instanceof RowVector and method_exists($this, $method . 'RowVector')) {
+                        $this->{$method . 'RowVector'}($tensor);
+                    }
                 case 'float':
                 case 'double':
                 case 'integer':
-                    return $this->{$method . 'Scalar'}($tensor);
+                    if (method_exists($this, $method . 'Scalar')) {
+                        return $this->{$method . 'Scalar'}($tensor);
+                    }
             }
             throw new InvalidArgumentException('Bad type of data recived', __CLASS__);
         } catch (InvalidArgumentException $e) {
@@ -120,208 +130,157 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
     }
 
     public function quantile(float $q): mixed {
-
-     }
+        if ($q > 1.0 or $q < 0.0) {
+            throw new InvalidArgumentException('Argument q mus be between 0.0 and 1.0');
+        }
+        $data = $this->data;
+        sort($data);
+        $x = $q * ($this->length - 1) + 1;
+        $y = (int) $x;
+        $remainder = $x - $y;
+        $z = $data[$y - 1];
+        return $z + $remainder * ($data[$y] - $z);
+    }
 
     /**
      * Arithmetic by matrix
      */
     public function addMatrix(Matrix $matrix): Matrix {
         TensorValidator::areIdentical($this->rows, $matrix->rows);
-        for ($i = 0; $i < $matrix->rows; $i++) {
-            for ($j = 0; $j < $matrix->columns; $j++) {
-                $data[$i][$j] = $this->data[$j] + $matrix->data[$i][$j];
-            }
-        }
-        return Matrix::fastCreate($data);
+        return Matrix::fastCreate(parent::_addMatrix($matrix));
     }
 
     public function subtractMatrix(Matrix $matrix): Matrix {
         TensorValidator::areIdentical($this->rows, $matrix->rows);
-        for ($i = 0; $i < $matrix->rows; $i++) {
-            for ($j = 0; $j < $matrix->columns; $j++) {
-                $data[$i][$j] = $this->data[$j] - $matrix->data[$i][$j];
-            }
-        }
-        return Matrix::fastCreate($data);
+        return Matrix::fastCreate(parent::_subtractMatrix($matrix));
     }
 
     public function multiplyMatrix(Matrix $matrix): Matrix {
         TensorValidator::areIdentical($this->rows, $matrix->rows);
-        for ($i = 0; $i < $matrix->rows; $i++) {
-            for ($j = 0; $j < $matrix->columns; $j++) {
-                $data[$i][$j] = $this->data[$j] * $matrix->data[$i][$j];
-            }
-        }
-        return Matrix::fastCreate($data);
+        return Matrix::fastCreate(parent::_multiplyMatrix($matrix));
     }
 
     public function divideMatrix(Matrix $matrix): Matrix {
         TensorValidator::areIdentical($this->rows, $matrix->rows);
-        for ($i = 0; $i < $matrix->rows; $i++) {
-            for ($j = 0; $j < $matrix->columns; $j++) {
-                $data[$i][$j] = $this->data[$j] / $matrix->data[$i][$j];
-            }
-        }
-        return Matrix::fastCreate($data);
+        return Matrix::fastCreate(parent::_divideMatrix($matrix));
+    }
+
+    public function isEqualMatrix(Matrix $matrix): Matrix {
+        TensorValidator::areIdentical($this->rows, $matrix->rows);
+        return Matrix::fastCreate(parent::_isEqualMatrix($matrix));
+    }
+
+    public function isNotEqualMatrix(Matrix $matrix): Matrix {
+        TensorValidator::areIdentical($this->rows, $matrix->rows);
+        return Matrix::fastCreate(parent::_isNotEqualMatrix($matrix));
     }
 
     public function isGreaterMatrix(Matrix $matrix): Matrix {
         TensorValidator::areIdentical($this->rows, $matrix->rows);
-        for ($i = 0; $i < $matrix->rows; $i++) {
-            for ($j = 0; $j < $matrix->columns; $j++) {
-                $data[$i][$j] = $this->data[$j] > $matrix->data[$i][$j] ? 1 : 0;
-            }
-        }
-        return Matrix::fastCreate($data);
+        return Matrix::fastCreate(parent::_isGreaterMatrix($matrix));
     }
 
     public function isGreaterOrEqualMatrix(Matrix $matrix): Matrix {
         TensorValidator::areIdentical($this->rows, $matrix->rows);
-        for ($i = 0; $i < $matrix->rows; $i++) {
-            for ($j = 0; $j < $matrix->columns; $j++) {
-                $data[$i][$j] = $this->data[$j] >= $matrix->data[$i][$j] ? 1 : 0;
-            }
-        }
-        return Matrix::fastCreate($data);
+        return Matrix::fastCreate(parent::_isGreaterOrEqualMatrix($matrix));
     }
 
     public function isLessMatrix(Matrix $matrix): Matrix {
         TensorValidator::areIdentical($this->rows, $matrix->rows);
-        for ($i = 0; $i < $matrix->rows; $i++) {
-            for ($j = 0; $j < $matrix->columns; $j++) {
-                $data[$i][$j] = $this->data[$j] < $matrix->data[$i][$j] ? 1 : 0;
-            }
-        }
-        return Matrix::fastCreate($data);
+        return Matrix::fastCreate(parent::_isLessMatrix($matrix));
     }
 
     public function isLessOrEqualMatrix(Matrix $matrix): Matrix {
         TensorValidator::areIdentical($this->rows, $matrix->rows);
-        for ($i = 0; $i < $matrix->rows; $i++) {
-            for ($j = 0; $j < $matrix->columns; $j++) {
-                $data[$i][$j] = $this->data[$j] <= $matrix->data[$i][$j] ? 1 : 0;
-            }
-        }
-        return Matrix::fastCreate($data);
+        return Matrix::fastCreate(parent::_isLessOrEqualMatrix($matrix));
     }
 
     /**
      * Arithmetic by vector
      */
     public function addVector(Vector $vector): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] + $vector->data[$i];
-        }
-        return self::fastCreate($data);
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_addVector($vector));
     }
 
     public function subtractVector(Vector $vector): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] - $vector->data[$i];
-        }
-        return self::fastCreate($data);
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_subtractVector($vector));
     }
 
     public function multiplyVector(Vector $vector): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] * $vector->data[$i];
-        }
-        return self::fastCreate($data);
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_multiplyVector($vector));
     }
 
     public function divideVector(Vector $vector): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] / $vector->data[$i];
-        }
-        return self::fastCreate($data);
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_multiplyVector($vector));
+    }
+
+    public function isEqualVector(Vector $vector): self {
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_isEqualVector($vector));
+    }
+
+    public function isNotEqualVector(Vector $vector): self {
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_isNotEqualVector($vector));
     }
 
     public function isGreaterVector(Vector $vector): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] > $vector->data[$i] ? 1.0 : 0.0;
-        }
-        return self::fastCreate($data);
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_isGreaterVector($vector));
     }
 
     public function isGreaterOrEqualVector(Vector $vector): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] >= $vector->data[$i] ? 1.0 : 0.0;
-        }
-        return self::fastCreate($data);
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_isGreaterOrEqualVector($vector));
     }
 
     public function isLessVector(Vector $vector): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] < $vector->data[$i] ? 1.0 : 0.0;
-        }
-        return self::fastCreate($data);
+        TensorValidator::areIdentical($this->length, $vector->length);
+        return self::fastCreate(parent::_isLessVector($vector));
     }
 
     public function isLessOrEqualVector(Vector $vector): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] <= $vector->data[$i] ? 1.0 : 0.0;
-        }
-        return self::fastCreate($data);
+        TensorValidator::areIdentical($this->rows, $vector->rows);
+        return self::fastCreate(parent::_isLessOrEqualVector($vector));
     }
 
     /**
      * Arithmetic by vector
      */
     public function addScalar(float|int $scalar): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] + $scalar;
-        }
-        return self::fastCreate($data);
+        return self::fastCreate(parent::_addScalar($scalar));
     }
 
     public function subtractScalar(float|int $scalar): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] - $scalar;
-        }
-        return self::fastCreate($data);
+        return self::fastCreate(parent::_subtractScalar($scalar));
     }
 
     public function multiplyScalar(float|int $scalar): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] * $scalar;
-        }
-        return self::fastCreate($data);
+        return self::fastCreate(parent::_multiplyScalar($scalar));
     }
 
     public function divideScalar(float|int $scalar): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] / $scalar;
-        }
-        return self::fastCreate($data);
+        return self::fastCreate(parent::_divideScalar($scalar));
     }
 
     public function isGreaterScalar(float|int $scalar): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] > $scalar ? 1.0 : 0.0;
-        }
-        return self::fastCreate($data);
+        return self::fastCreate(parent::_isGreaterScalar($scalar));
     }
 
     public function isGreaterOrEqualScalar(float|int $scalar): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] >= $scalar ? 1.0 : 0.0;
-        }
-        return self::fastCreate($data);
+        return self::fastCreate(parent::_isGreaterOrEqualScalar($scalar));
     }
 
     public function isLessScalar(float|int $scalar): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] < $scalar ? 1.0 : 0.0;
-        }
-        return self::fastCreate($data);
+        return self::fastCreate(parent::_isLessScalar($scalar));
     }
 
     public function isLessOrEqualScalar(float|int $scalar): self {
-        for ($i = 0; $i < $this->rows; $i++) {
-            $data[] = $this->data[$i] <= $scalar ? 1.0 : 0.0;
-        }
-        return self::fastCreate($data);
+        return self::fastCreate(parent::_isLessOrEqualScalar($scalar));
     }
 
     /**
@@ -384,13 +343,11 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Arithmetical
      */
-    public function pow(float $base = 2): array {
-        for ($i = 0; $i < $this->rows; $i++) {
-            for ($j = 0; $j < $this->columns; $j++) {
-                $data[$i][$j] = $this->data[$i][$j] ** $base;
-            }
+    public function pow(float $base = 2): self {
+        for ($i = 0; $i < $this->length; $i++) {
+            $data[$i] = $this->data[$i] ** $base;
         }
-        return $data;
+        return self::fastCreate($data);
     }
 
     /**
@@ -415,36 +372,16 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
         return (float) max($this->data);
     }
 
-    public function lowerRange(float $min): array {
-        return $this->range($min, null);
+    public function lowerRange(float $min): self {
+        return $this->range(min: $min, max: null);
     }
 
-    public function upperRange(float $max): array {
-        return $this->range(null, $max);
+    public function upperRange(float $max): self {
+        return $this->range(min: null, max: $max);
     }
 
-    public function range(?float $min, ?float $max): array {
-        if ($min === null and $max === null) {
-            throw new InvalidArgumentException('No scope was given.', Response::HTTP_BAD_REQUEST);
-        }
-        if ($min > $max) {
-            $tmp = $min;
-            $min = $max;
-            $max = $tmp;
-        }
-        $data = [];
-        foreach ($this->data as $value) {
-            if ($min !== null and $value < $min) {
-                $data[] = $min;
-                continue;
-            }
-            if ($max !== null and $value > $max) {
-                $data[] = $max;
-                continue;
-            }
-            $data[] = $value;
-        }
-        return $data;
+    public function range(?float $min, ?float $max): self {
+        return self::fastCreate(data: parent::_range($min, $max));
     }
 
     public function product(): float {
@@ -457,7 +394,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
      * @return self
      */
     public static function create(mixed $data, bool $skip = false): self {
-        return new self($data, $skip);
+        return new self(data: $data, skip: $skip);
     }
 
     /**
@@ -466,7 +403,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
      * @return self
      */
     public static function fastCreate(mixed $data, bool $skip = true): self {
-        return new self($data, $skip);
+        return new self(data: $data, skip: $skip);
     }
 
     /**
@@ -478,7 +415,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
         for ($i = 0; $i < $length; $i++) {
             $data[$i] = 0.0;
         }
-        return new self($data, true);
+        return self::create(data: $data, skip: false);
     }
 
     /**
@@ -490,7 +427,7 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
         for ($i = 0; $i < $length; $i++) {
             $data[$i] = 1.0;
         }
-        return new self($data, true);
+        return self::create(data: $data, skip: false);
     }
 
     /**
@@ -503,20 +440,12 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
         for ($i = 0; $i < $length; $i++) {
             $data[$i] = $value;
         }
-        return new self($data, true);
+        return self::create(data: $data, skip: false);
     }
 
-    /**
-     * @param int $length
-     * @param float $from
-     * @param float $to
-     * @param float $precision = 1e-2
-     * @return self
-     * @throws InvalidArgumentException
-     */
-    public static function fillRandomize(int $length, float $from = -1.0, float $to = 1.0, float $precision = 1e-2): self {
+    public static function fillRandomize(int $length, int $from = -1, int $to = 1, int $precision = 2): self {
         try {
-            return new self(self::randomize($length, $from, $to, $precision), true);
+            return new self(parent::randomize($length, $from, $to, $precision), true);
         } catch (InvalidArgumentException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
             throw $e;
@@ -573,6 +502,24 @@ class ColumnVector extends Vector implements Vectorable, Tensor {
     public static function fillGaussian(int $length): self {
         try {
             return new self(self::gaussian($length), true);
+        } catch (InvalidArgumentException $e) {
+            Log::critical($e->getMessage(), [__CLASS__]);
+            throw $e;
+        }
+    }
+
+    public final static function fillRandomizeRequireFrom(int $length, int $from = -1, int $to = 1, int $precision = 2): self {
+        try {
+            return new self(parent::randomizeRequireFrom($length, $from, $to, $precision), true);
+        } catch (InvalidArgumentException $e) {
+            Log::critical($e->getMessage(), [__CLASS__]);
+            throw $e;
+        }
+    }
+
+    public final static function fillRandomizeRequireTo(int $length, int $from = -1, int $to = 1, int $precision = 2): self {
+        try {
+            return new self(parent::randomizeRequireTo($length, $from, $to, $precision), true);
         } catch (InvalidArgumentException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
             throw $e;

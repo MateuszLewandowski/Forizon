@@ -20,7 +20,7 @@ class AlgebraicTest extends TestCase
     public function testRoundExpectsSuccess() { $this->runCallable(__FUNCTION__, 2); }
     public function testFloorExpectsSuccess() { $this->runCallable(__FUNCTION__); }
     public function testNegateExpectsSuccess() {
-        $basic = Matrix::randomize(3, 3, 0.01, 1.0);
+        $basic = Matrix::fillRandomize(3, 3, 1, 10);
         if (!$basic instanceof Matrix) {
             $this->assertTrue(false);
         }

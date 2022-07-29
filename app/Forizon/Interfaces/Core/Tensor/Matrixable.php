@@ -63,12 +63,12 @@ interface Matrixable {
     public static function fillZeros(int $rows, int $columns): mixed;
     public static function fillOnes(int $rows, int $columns): mixed;
     public static function fill(int $rows, int $columns, float $value): mixed;
-    public static function randomize(int $rows, int $columns, float $from = -1.0, float $to = 1.0, float $precision = 1e-2): self;
+    public static function fillRandomize(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2): self;
     public static function randmax(int $rows, int $columns): self;
     public static function fillRandom(int $rows, int $columns): self;
     public static function fillUniform(int $rows, int $columns): self;
     public static function fillGaussian(int $rows, int $columns): self;
-    public static function randomizeRequireFrom(int $rows, int $columns, float $from = -1.0, float $to = 1.0, float $precision = 1e-2);
-    public static function randomizeRequireTo(int $rows, int $columns, float $from = -1.0, float $to = 1.0, float $precision = 1e-2);
+    public static function fillRandomizeRequireFrom(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2);
+    public static function fillRandomizeRequireTo(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2);
 
 }

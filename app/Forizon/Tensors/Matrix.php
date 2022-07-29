@@ -361,6 +361,7 @@ class Matrix implements Matrixable, Tensor {
         }
         return self::fastCreate($data);
     }
+
     public function isGreaterMatrix(Matrix $matrix): self {
         TensorValidator::areIdentical($this->shape(), $matrix->shape());
         for ($i = 0; $i < $this->rows; $i++) {
@@ -850,34 +851,6 @@ class Matrix implements Matrixable, Tensor {
     /**
      * @param int $rows
      * @param int $columns
-     * @param float $from
-     * @param float $to
-     * @param float $precision = 1e-2
-     * @return self
-     * @throws InvalidArgumentException
-     */
-    public static function randomize(int $rows, int $columns, float $from = -1.0, float $to = 1.0, float $precision = 2): self {
-        try {
-            if ($rows < 1 or $columns < 1) {
-                throw new InvalidArgumentException('', Response::HTTP_BAD_REQUEST);
-            }
-            $data = [];
-            $precision = 10 ** $precision;
-            for ($i = 0; $i < $rows; $i++) {
-                for ($j = 0; $j < $columns; $j++) {
-                    $data[$i][$j] = mt_rand($from * $precision, $to * $precision) / $precision;
-                }
-            }
-            return new self($data, true);
-        } catch (InvalidArgumentException $e) {
-            Log::critical($e->getMessage(), [__CLASS__]);
-            throw $e;
-        }
-    }
-
-    /**
-     * @param int $rows
-     * @param int $columns
      * @return self
      * @throws InvalidArgumentException
      */
@@ -980,31 +953,19 @@ class Matrix implements Matrixable, Tensor {
         }
     }
 
-    /**
-     * @param int $rows
-     * @param int $columns
-     * @param float $from
-     * @param float $to
-     * @param float $precision = 1e-2
-     * @return self
-     * @throws InvalidArgumentException
-     */
-    public static function randomizeRequireFrom(int $rows, int $columns, float $from = -1.0, float $to = 1.0, float $precision = 2): self {
+    private static final function randomize(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2): array {
         try {
             if ($rows < 1 or $columns < 1) {
                 throw new InvalidArgumentException('', Response::HTTP_BAD_REQUEST);
             }
+            $precision = $precision <= 0 ? 1 : pow(10, $precision);
             $data = [];
-            $precision = 10 ** $precision;
             for ($i = 0; $i < $rows; $i++) {
                 for ($j = 0; $j < $columns; $j++) {
                     $data[$i][$j] = mt_rand($from * $precision, $to * $precision) / $precision;
                 }
             }
-            $i = mt_rand(0, $rows);
-            $j = mt_rand(0, $columns);
-            $data[$i][$j] = $from;
-            return new self($data, true);
+            return $data;
         } catch (InvalidArgumentException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
             throw $e;
@@ -1014,31 +975,47 @@ class Matrix implements Matrixable, Tensor {
     /**
      * @param int $rows
      * @param int $columns
-     * @param float $from
-     * @param float $to
-     * @param float $precision = 1e-2
+     * @param int $from
+     * @param int $to
+     * @param int $precision = 2
      * @return self
      * @throws InvalidArgumentException
      */
-    public static function randomizeRequireTo(int $rows, int $columns, float $from = -1.0, float $to = 1.0, float $precision = 2): self {
-        try {
-            if ($rows < 1 or $columns < 1) {
-                throw new InvalidArgumentException('', Response::HTTP_BAD_REQUEST);
-            }
-            $data = [];
-            $precision = 10 ** $precision;
-            for ($i = 0; $i < $rows; $i++) {
-                for ($j = 0; $j < $columns; $j++) {
-                    $data[$i][$j] = mt_rand($from * $precision, $to * $precision) / $precision;
-                }
-            }
-            $i = mt_rand(0, $rows);
-            $j = mt_rand(0, $columns);
-            $data[$i][$j] = $to;
-            return new self($data, true);
-        } catch (InvalidArgumentException $e) {
-            Log::critical($e->getMessage(), [__CLASS__]);
-            throw $e;
-        }
+    public static function fillRandomize(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2): self {
+        return new self(self::randomize($rows, $columns, $from, $to, $precision));
+    }
+
+    /**
+     * @param int $rows
+     * @param int $columns
+     * @param int $from
+     * @param int $to
+     * @param int $precision = 2
+     * @return self
+     * @throws InvalidArgumentException
+     */
+    public static function fillRandomizeRequireFrom(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2): self {
+        $data = self::randomize($rows, $columns, $from, $to, $precision);
+        $i = mt_rand(0, $rows);
+        $j = mt_rand(0, $columns);
+        $data[$i][$j] = $from;
+        return new self($data, true);
+    }
+
+    /**
+     * @param int $rows
+     * @param int $columns
+     * @param int $from
+     * @param int $to
+     * @param int $precision = 2
+     * @return self
+     * @throws InvalidArgumentException
+     */
+    public static function fillRandomizeRequireTo(int $rows, int $columns, int $from = -1, int $to = 1, int $precision = 2): self {
+        $data = self::randomize($rows, $columns, $from, $to, $precision);
+        $i = mt_rand(0, $rows);
+        $j = mt_rand(0, $columns);
+        $data[$i][$j] = $to;
+        return new self($data, true);
     }
 }
