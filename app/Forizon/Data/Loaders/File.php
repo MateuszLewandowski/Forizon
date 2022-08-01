@@ -1,7 +1,9 @@
-<?php 
+<?php
 
 namespace App\Forizon\Data\Loaders;
 
-class File {
+use App\Forizon\Abstracts\Data\Loader;
+
+class File extends Loader {
 
 }

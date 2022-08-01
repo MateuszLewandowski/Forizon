@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Models\Regression;
+namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Models\Classification;
 
 use App\Forizon\Abstracts\ComputationalIntelligence\Neuron;
 use App\Forizon\Interfaces\Core\Optimizer;
@@ -22,17 +22,5 @@ final class Perceptron extends Neuron
             }
             $neuronConfiguration->unused[] = $key;
         }
-    }
-
-    public abstract function train(Collection $dataset): array {
-
-    }
-
-    public abstract function process(Collection $dataset): array {
-
-    }
-
-    public abstract function predict(Collection $dataset): array {
-
     }
 }

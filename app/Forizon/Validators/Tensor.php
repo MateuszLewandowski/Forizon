@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Log;
 class Tensor
 {
     /**
-     * Undocumented function
-     *
      * @param mixed $first
      * @param mixed $second
      * @return void
@@ -19,7 +17,7 @@ class Tensor
     public static function areIdentical(mixed $first, mixed $second): void {
         try {
             if ($first !== $second) {
-                throw new InvalidArgumentException('Items are not identical', Response::HTTP_BAD_REQUEST);
+                throw new InvalidArgumentException('Items are not identical.', Response::HTTP_BAD_REQUEST);
             }
         } catch (InvalidArgumentException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);

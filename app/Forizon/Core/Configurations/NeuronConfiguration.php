@@ -1,36 +1,20 @@
 <?php
 
-namespace App\Forizon\Abstracts\ComputationalIntelligence;
+namespace App\Forizon\Core\Configurations;
 
-use App\Forizon\Core\Optimizers\{
-    AdaDelta, Adagrad, Adam, GradientDescent, MiniBatchGradientDescent, Momentum, NesterovAcceleratedGradient, StochasticGradientDescent
-};
-use App\Forizon\Core\Functions\Activation\{
-    BinaryStep, ExponentialLinearUnit, Gauss, HyperbolicTangent, LeakyRectifiedLinearUnit, Linear, ParametricRectifiedLinearUnit, RectifiedLinearUnit,
-    ScaledExponentialLinearUnit, Sigmoid, Softmax, SoftPlus, Softsign, Swish, ThresholdedRectifiedLinearUnit
-};
-use App\Forizon\Core\Functions\Cost\{
-    BinaryCrossEntropyCost, CategoricalCrossEnthopyCost, MeanAbsoluteError, MeanError, MeanSquaredError, MedianAbsoluteError, RootMeanSquaredError, RSquared, SymmetricMeanAbsolutePercentageError
-};
-use App\Forizon\Core\Functions\Loss\{
-    CrossEntropy, Exponentional, Hellinger, Huber, KullbackLeibler, LeastSquares, Quadratic
-};
+use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Input;
+use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Output;
+use App\Forizon\Interfaces\Core\Optimizer;
+use App\Forizon\Abstracts\Configuration;
 use App\Forizon\Interfaces\Core\Functions\{
     Loss as LossFunction,
     Cost as CostFunction,
 };
 
-use App\Forizon\Interfaces\Core\{
-    Optimizer
-};
-use App\Abstracts\Data\Collection;
-use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\NeuralNetwork;
-
-/**
- * For perceptrons & adaline.
- */
-abstract class Neuron
+class NeuronConfiguration extends Configuration
 {
+    protected string $model;
+
     /**
      * Training samples quantity
      *
@@ -62,7 +46,7 @@ abstract class Neuron
      *
      * @var int x > 0; default 5
      */
-    protected float $window = 5;
+    protected int $window = 5;
 
     /**
      * Training / test ratio
@@ -112,27 +96,23 @@ abstract class Neuron
     protected array $costs;
 
     /**
-     * Results of every epoch.
+     * Input layer - A placeholder for the an input vector.
      *
-     * @var array
+     * @var Input
      */
-    protected array $history;
+    protected Input $input;
 
     /**
-     * A complete network state at the time.
+     * Array that contains only hidden layers
      *
-     * @var array
+     * @var array<Hidden>
      */
-    protected array $snapshoot;
+    protected array $hiddens;
 
     /**
-     * Neural network instance.
+     * Output layer
      *
-     * @var NeuralNetwork
+     * @var Output
      */
-    protected NeuralNetwork $neuralNetwork;
-
-    public abstract function train(Collection $dataset): array;
-    public abstract function process(Collection $dataset): array;
-    public abstract function predict(Collection $dataset): array;
+    protected Output $output;
 }

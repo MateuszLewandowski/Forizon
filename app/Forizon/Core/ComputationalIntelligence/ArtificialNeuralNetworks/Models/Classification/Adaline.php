@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Models\Regression;
+namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Models\Classification;
 
 use App\Forizon\Abstracts\ComputationalIntelligence\Neuron;
 
