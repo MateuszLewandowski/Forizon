@@ -3,7 +3,7 @@
 namespace App\Forizon\Data\Loaders;
 
 use App\Forizon\Core\Configurations\CollectionConfiguration;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder;
 use App\Forizon\Abstracts\Data\Loader;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
@@ -21,18 +21,18 @@ class Database extends Loader
     public function __construct(CollectionConfiguration $collectionConfiguration)
     {
         try {
-            $config = $collectionConfiguration->getProperiesAsObject();
-            $this->setTable($config->table)
-                ->setResearchableColumnKey($config->column_key)
-                ->setResearchableColumnValue($config->column_value)
+            $config = $collectionConfiguration->getPropertiesAsObject();
+            $this->table($config->table)
+                ->researchableColumnKey($config->column_key)
+                ->researchableColumnValue($config->column_value)
                 ->groupByInterval($config?->group_by_interval)
-                ->setSkipValuesGreaterThan($config?->skip_values_greater_than)
-                ->setSkipValuesGreaterOrEqualThan($config?->skip_values_less_than)
-                ->setSkipValuesLessThan($config?->skip_values_greater_or_equal_than)
-                ->setSkipValuesLessOrEqualThan($config?->skip_values_less_or_equal_than)
-                ->setDateTimeFrom($config?->dateTimeFrom)
-                ->setDateTimeTo($config?->dateTimeTo)
-                ->setBatches($config?->batches);
+                ->skipValuesGreaterThan($config?->skip_values_greater_than)
+                ->skipValuesGreaterOrEqualThan($config?->skip_values_less_than)
+                ->skipValuesLessThan($config?->skip_values_greater_or_equal_than)
+                ->skipValuesLessOrEqualThan($config?->skip_values_less_or_equal_than)
+                ->dateTimeFrom($config?->dateTimeFrom)
+                ->dateTimeTo($config?->dateTimeTo)
+                ->batches($config?->batches);
         } catch (RuntimeException $e) {
             //
         } catch (PDOException $e) {
@@ -49,7 +49,7 @@ class Database extends Loader
      */
     public function getColumnKeyDistinct(): int {
         try {
-            return $this->query()->distinct()->count($this->column_key);
+            return $this->getBasicCollectionQuery()->distinct()->count($this->column_key);
         } catch (PDOException $e) {
             //
         }
@@ -62,7 +62,7 @@ class Database extends Loader
      */
     public function getColumnValueDistinct(): int {
         try {
-            return $this->query()->distinct()->count($this->column_value);
+            return $this->getBasicCollectionQuery()->distinct()->count($this->column_value);
         } catch (PDOException $e) {
             //
         }
@@ -75,20 +75,20 @@ class Database extends Loader
      */
     public function getTotalSamplesQuantity(): int {
         try {
-            return $this->query()->count();
+            return $this->getBasicCollectionQuery()->count();
         } catch (PDOException $e) {
             //
         }
     }
 
-    private function query(): Builder {
+    private function getBasicCollectionQuery(): Builder {
         if (!is_null($this->query)) {
             return $this->query;
         }
         try {
             $where = [];
             $query = DB::table($this->table)
-                ->selectRaw("$this->column_key as key, $this->column_value as value");
+                ->select("$this->column_key as key", "$this->column_value as value");
             if (!is_null($this->dateTimeFrom)) {
                 $query = $query->whereDate('key', '>=', $this->DateTimeFrom->format(self::DEFAULT_TIMESTAMP));
             }
@@ -135,20 +135,10 @@ class Database extends Loader
      */
     public function loadCollection(): Collection {
         try {
-            return $this->query()->get();
+            return $this->getBasicCollectionQuery()->get();
         } catch (PDOException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
             throw $e;
         }
     }
-
-    /**
-     * Normalize dataset collection in given way.
-     *
-     * @return Collection
-     */
-    public function normalizeCollection(): Collection {
-
-    }
-
 }

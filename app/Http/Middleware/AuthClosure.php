@@ -2,14 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
+use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
-use App\Services\Auth\JSONWebToken as JWTService;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpFoundation\Response;
+use App\Models\User;
+use Closure;
 
-
-class VerifyJWT
+class AuthClosure
 {
     /**
      * Handle an incoming request.
@@ -20,10 +18,10 @@ class VerifyJWT
      */
     public function handle(Request $request, Closure $next)
     {
-        [$status, $user] = (new JWTService)->getUserWithToken($request->header('JWT', ''));
-        if ($status !== Response::HTTP_OK) {
-            throw new HttpException(Response::HTTP_FORBIDDEN, __('auth.not_authorized'));
-        }
+        $user = $request->user;
+        App::bind(User::class, function() use ($user) {
+            return $user;
+        });
 
         return $next($request);
     }

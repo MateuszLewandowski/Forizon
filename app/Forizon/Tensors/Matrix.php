@@ -724,7 +724,7 @@ class Matrix implements Matrixable, Tensor {
                 case 'double':
                 case 'integer':
                     if (method_exists($this, $method . 'Scalar')) {
-                        return $this->{$method . 'Scalar'}();
+                        return $this->{$method . 'Scalar'}($tensor);
                     }
             }
             throw new InvalidArgumentException('Bad type of data recived', __CLASS__);

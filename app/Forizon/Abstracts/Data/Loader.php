@@ -35,12 +35,16 @@ abstract class Loader
      * @param string $table
      * @return self
      */
-    public function setTable(string $table): self {
-        if (!Schema::hasTable($table)) {
-
+    public function table(string $table): self {
+        try {
+            // if (!Schema::hasTable($table)) {
+            //     throw new InvalidArgumentException();
+            // }
+            $this->table = $table;
+            return $this;
+        } catch (InvalidArgumentException $e) {
+            //
         }
-        $this->table = $table;
-        return $this;
     }
 
     /**
@@ -49,15 +53,19 @@ abstract class Loader
      * @param string $column_key
      * @return self
      */
-    public function setResearchableColumnKey(string $column_key): self {
-        if (!$this->table)  {
-
+    public function researchableColumnKey(string $column_key): self {
+        try {
+            // if (!$this->table)  {
+            //     throw new InvalidArgumentException();
+            // }
+            // if (!Schema::hasColumn($this->table, $column_key)) {
+            //     throw new InvalidArgumentException();
+            // }
+            $this->column_key = $column_key;
+            return $this;
+        } catch (InvalidArgumentException $e) {
+            //
         }
-        if (!Schema::hasColumn($this->table, $column_key)) {
-
-        }
-        $this->column_key = $column_key;
-        return $this;
     }
 
     /**
@@ -66,15 +74,19 @@ abstract class Loader
      * @param string $column_value
      * @return self
      */
-    public function setResearchableColumnValue(string $column_value): self {
-        if (!$this->table)  {
-
+    public function researchableColumnValue(string $column_value): self {
+        try {
+            // if (!$this->table)  {
+            //     throw new InvalidArgumentException();
+            // }
+            // if (!Schema::hasColumn($this->table, $column_value)) {
+            //     throw new InvalidArgumentException();
+            // }
+            $this->column_value = $column_value;
+            return $this;
+        } catch (InvalidArgumentException $e) {
+            //
         }
-        if (!Schema::hasColumn($this->table, $column_value)) {
-
-        }
-        $this->column_value = $column_value;
-        return $this;
     }
 
     /**
@@ -107,7 +119,6 @@ abstract class Loader
     }
 
     /**
-     * Return the minimum value from the loaded collection.
      * @todo Exception message and status code.
      * @return float
      */
@@ -124,38 +135,7 @@ abstract class Loader
         return $min;
     }
 
-    /**
-     * Return the maximum value from the loaded collection.
-     *
-     * @todo Exception message and status code.
-     * @return float
-     */
-    public function getMax(): float {
-        if (!$this->collection) {
-            throw new RuntimeException();
-        }
-        $max = -INF;
-        foreach ($this->collection as $value) {
-            if ($value > $max) {
-                $max = $value;
-            }
-        }
-        return $max;
-    }
-
-    /**
-     * Return extremes (min and max values) from the loaded collection.
-     *
-     * @return array
-     */
-    public function getExtremes(): array {
-        return [
-            'min' => $this->getMin(),
-            'max' => $this->getMax(),
-        ];
-    }
-
-    public function setSkipValuesGreaterThan(?float $value = null): self {
+    public function skipValuesGreaterThan(?float $value = null): self {
         if (!is_null($value)) {
             $this->skip_values_greater_or_equal_than = null;
             $this->skip_values_greater_or_than = $value;
@@ -163,7 +143,7 @@ abstract class Loader
         return $this;
     }
 
-    public function setSkipValuesGreaterOrEqualThan(?float $value = null): self {
+    public function skipValuesGreaterOrEqualThan(?float $value = null): self {
         if (!is_null($value)) {
             $this->skip_values_greater_or_than = null;
             $this->skip_values_greater_or_equal_than = $value;
@@ -171,7 +151,7 @@ abstract class Loader
         return $this;
     }
 
-    public function setSkipValuesLessThan(?float $value = null): self {
+    public function skipValuesLessThan(?float $value = null): self {
         if (!is_null($value)) {
             $this->skip_values_less_or_equal_than = null;
             $this->skip_values_less_or_than = $value;
@@ -179,7 +159,7 @@ abstract class Loader
         return $this;
     }
 
-    public function setSkipValuesLessOrEqualThan(?float $value = null): self {
+    public function skipValuesLessOrEqualThan(?float $value = null): self {
         if (!is_null($value)) {
             $this->skip_values_less_or_than = null;
             $this->skip_values_less_or_equal_than = $value;
@@ -193,7 +173,7 @@ abstract class Loader
      * @param integer $batches
      * @return self
      */
-    public function setBatches(int $batches): self {
+    public function batches(?int $batches = null): self {
         if ($batches < 1) {
             throw new InvalidArgumentException();
         }
@@ -206,7 +186,7 @@ abstract class Loader
      * @param DateTime $dateTimeFrom
      * @return self
      */
-    public function setDateTimeFrom(DateTime $dateTimeFrom): self {
+    public function dateTimeFrom(?DateTime $dateTimeFrom = null): self {
         $this->dateTimeFrom = $dateTimeFrom;
         return $this;
     }
@@ -216,7 +196,7 @@ abstract class Loader
      * @param DateTime $dateTimeFrom
      * @return self
      */
-    public function setDateTimeTo(DateTime $dateTimeTo): self {
+    public function dateTimeTo(?DateTime $dateTimeTo = null): self {
         $this->dateTimeTo = $dateTimeTo;
         return $this;
     }
@@ -248,11 +228,4 @@ abstract class Loader
      * @return Collection
      */
     public abstract function loadCollection(): Collection;
-
-    /**
-     * Normalize dataset collection in given way.
-     *
-     * @return Collection
-     */
-    public abstract function normalizeCollection(): Collection;
 }
