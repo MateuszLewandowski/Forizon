@@ -1,0 +1,30 @@
+[MySQL]
+How to create user and grand permissions
+1. mysql -u root -h localhost -p
+2. CREATE USER 'sail'@'localhost' IDENTIFIED WITH mysql_native_password BY 'zaq1@WSX';
+3. GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'sail'@'localhost' WITH GRANT OPTION;
+@see: https://www.digitalocean.com/community/tutorials/how-to-create-a-new-user-and-grant-permissions-in-mysql
+@see: https://www.cyberciti.biz/faq/mysql-change-user-password/
+@see: https://docs.rackspace.com/support/how-to/install-mysql-server-on-the-ubuntu-operating-system/
+@see https://www.inmotionhosting.com/support/server/databases/create-a-mysql-database/
+sudo systemctl start mysql
+CREATE DATABASE db_name;
+
+[Docker]
+1. Run docker by: sudo chmod 666 /var/run/docker.sock
+2. Run sail by:   sail up
+@see: https://laravel.com/docs/9.x/sail
+
+[Redis]
+Install php-redis & composer predis
+1. set password by: config set requirepass zaq1@WSX
+2. sudo systemctl unmask  redis-server.service
+3. sudo nano /etc/systemd/system/redis.service and write following things
+   https://medium.com/hexavara-tech/optimize-laravel-with-redis-caching-made-easy-bf486bf4c58
+4. sudo systemctl start redis
+5. https://stackoverflow.com/questions/42857551/could-not-connect-to-redis-at-127-0-0-16379-connection-refused-with-homebrew
+6. https://aregsar.com/blog/2020/my-laravel-redis-configuration/
+Always?:
+7. sudo service redis-server start
+8. redis-cli
+9. config set requirepass zaq1@WSX
