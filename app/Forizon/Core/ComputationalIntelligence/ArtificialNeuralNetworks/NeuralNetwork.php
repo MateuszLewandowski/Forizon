@@ -64,8 +64,8 @@ final class NeuralNetwork
         return $this;
     }
 
-    public function setHiddenLayer(Hidden $hidden): self {
-        $this->hidden = $hidden;
+    public function setHiddenLayers(array $hiddens): self {
+        $this->hiddens = $hiddens;
         return $this;
     }
 
