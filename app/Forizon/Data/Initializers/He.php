@@ -7,9 +7,9 @@ use App\Forizon\Tensors\Matrix;
 
 class He implements Initializer
 {
-    public const ETA = 0.70710678118;
+    private const ETA = 0.70710678118;
 
-    public function init(int $input, int $output): Matrix {
-        return Matrix::fillUniform($input, $output)->multiply(pow(6.0 / ($input + $output), self::ETA));
+    public function init(int $rows, int $columns): Matrix {
+        return Matrix::fillUniform($rows, $columns)->multiply(pow(6.0 / ($rows + $columns), self::ETA));
     }
 }

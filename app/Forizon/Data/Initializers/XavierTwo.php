@@ -7,7 +7,7 @@ use App\Forizon\Tensors\Matrix;
 
 class XavierTwo implements Initializer
 {
-    public function init(int $input, int $output): Matrix {
-        return Matrix::fillUniform($input, $output)->multiply(pow(6.0 / ($input + $output), .25));
+    public function init(int $rows, int $columns): Matrix {
+        return Matrix::fillUniform($rows, $columns)->multiply(pow(6.0 / ($rows + $columns), .25));
     }
 }

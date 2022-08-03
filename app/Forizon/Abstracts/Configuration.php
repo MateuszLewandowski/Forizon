@@ -6,14 +6,14 @@ use Symfony\Component\Process\Exception\InvalidArgumentException;
 use Exception;
 use stdClass;
 
-abstract class Configuration {
-
+abstract class Configuration
+{
     /**
-     * attributes that has not been used in the initialization process.
+     * attributes that has been used in the initialization process.
      *
      * @var array
      */
-    public array $unused;
+    protected array $used = [];
 
     /**
      * Set configuration variable.
@@ -22,12 +22,21 @@ abstract class Configuration {
      * @param mixed $value
      * @return mixed
      */
-    public function set(string $key, mixed $value): mixed {
-        try {
-            $this->{$key} = $value;
-        } catch (Exception $e) {
-            //
+    public function set(string $key, mixed $value): void {
+        $this->{$key} = $value;
+        $this->setUsed($key);
+        return;
+    }
+
+    /**
+     * @param string $key
+     * @return void
+     */
+    public function setUsed(string $key): void {
+        if (!array_key_exists($key, $this->used)) {
+            $this->used[] = $key;
         }
+        return;
     }
 
     /**
@@ -60,7 +69,7 @@ abstract class Configuration {
      *
      * @return array
      */
-    public function getProperiesAsArray(): array {
+    public function getPropertiesAsArray(): array {
         return get_mangled_object_vars($this);
     }
 
@@ -69,8 +78,8 @@ abstract class Configuration {
      *
      * @return stdClass
      */
-    public function getProperiesAsObject(): stdClass {
-        return (object) $this->getProperiesAsArray();
+    public function getPropertiesAsObject(): stdClass {
+        return (object) $this->getPropertiesAsArray();
     }
 
     /**

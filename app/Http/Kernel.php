@@ -39,9 +39,17 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \App\Http\Middleware\ForceSSL::class,
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\VerifyLanguage::class,
+            \App\Http\Middleware\VerifyAPIKey::class,
+        ],
+
+        'authorized' => [
+            \App\Http\Middleware\VerifyJWT::class,
+            \App\Http\Middleware\AuthClosure::class,
         ],
     ];
 

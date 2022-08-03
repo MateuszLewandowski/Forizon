@@ -7,7 +7,7 @@ use App\Forizon\Tensors\Matrix;
 
 class XavierOne implements Initializer
 {
-    public function init(int $input, int $output): Matrix {
-        return Matrix::randmax($input, $output)->multiply(sqrt(6.0 / ($input + $output)));
+    public function init(int $rows, int $columns): Matrix {
+        return Matrix::randmax($rows, $columns)->multiply(sqrt(6.0 / ($rows + $columns)));
     }
 }
