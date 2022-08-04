@@ -19,12 +19,9 @@ use App\Forizon\Interfaces\Core\Functions\{
     Loss as LossFunction,
     Cost as CostFunction,
 };
-
-use App\Forizon\Interfaces\Core\{
-    Optimizer
-};
-use App\Abstracts\Data\Collection;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\NeuralNetwork;
+use App\Forizon\Interfaces\Core\Optimizer;
+use Illuminate\Support\Collection;
 
 /**
  * For perceptrons & adaline.
@@ -132,7 +129,7 @@ abstract class Neuron
      */
     protected NeuralNetwork $neuralNetwork;
 
-    public abstract function train(Collection $dataset): array;
-    public abstract function process(Collection $dataset): array;
-    public abstract function predict(Collection $dataset): array;
+    public abstract function train(Collection $collection): array;
+    public abstract function process(Collection $collection): array;
+    public abstract function predict(Collection $collection): array;
 }

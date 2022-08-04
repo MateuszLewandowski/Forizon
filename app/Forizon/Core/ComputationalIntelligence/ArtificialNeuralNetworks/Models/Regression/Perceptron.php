@@ -4,35 +4,28 @@ namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Mo
 
 use App\Forizon\Abstracts\ComputationalIntelligence\Neuron;
 use App\Forizon\Interfaces\Core\Optimizer;
+use App\Forizon\Core\Configurations\NeuronConfiguration;
+use Illuminate\Support\Collection;
 use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\{
     Placeholder, Output, Layer, Hidden,
 };
-use App\Forizon\Core\Distances\NeuronConfiguration;
 
 final class Perceptron extends Neuron
 {
-    private bool $is_multiperceptron = false;
-
     public function __construct(NeuronConfiguration $neuronConfiguration)
     {
-        foreach ($neuronConfiguration->getAll() as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-                continue;
-            }
-            $neuronConfiguration->unused[] = $key;
-        }
-    }
-
-    public abstract function train(Collection $dataset): array {
 
     }
 
-    public abstract function process(Collection $dataset): array {
+    public function train(Collection $collection): array {
 
     }
 
-    public abstract function predict(Collection $dataset): array {
+    public function process(Collection $collection): array {
+
+    }
+
+    public function predict(Collection $collection): array {
 
     }
 }

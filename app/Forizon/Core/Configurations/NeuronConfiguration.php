@@ -13,8 +13,6 @@ use App\Forizon\Interfaces\Core\Functions\{
 
 class NeuronConfiguration extends Configuration
 {
-    protected string $model;
-
     /**
      * Training samples quantity
      *
@@ -76,24 +74,10 @@ class NeuronConfiguration extends Configuration
     protected LossFunction $lossFunction;
 
     /**
-     * Additional loss functions results excepts main LossFunction.
-     *
-     * @var array
-     */
-    protected array $losses;
-
-    /**
      * @todo description
      * @var CostFunction
      */
     protected CostFunction $costFunction;
-
-    /**
-     * Additional cost functions results excepts main CostFunction.
-     *
-     * @var array
-     */
-    protected array $costs;
 
     /**
      * Input layer - A placeholder for the an input vector.

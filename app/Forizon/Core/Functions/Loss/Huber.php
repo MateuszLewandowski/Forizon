@@ -16,7 +16,7 @@ class Huber implements LossFunction, Regressable
         $this->alpha_pow = pow($alpha, 2);
     }
 
-    public function calc(Matrix $output, Matrix $target): float {
+    public function calculate(Matrix $output, Matrix $target): float {
         $pre = $target->subtract($output);
         for ($i = 0; $i < $target->rows; $i++) {
             for ($j = 0; $j < $target->cols; $j++) {

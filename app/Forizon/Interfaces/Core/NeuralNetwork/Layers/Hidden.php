@@ -2,6 +2,6 @@
 
 namespace App\Forizon\Interfaces\Core\NeuralNetwork\Layers;
 
-interface Hidden extends Layer {
+interface Hidden extends Layer, Workable {
 
 }
