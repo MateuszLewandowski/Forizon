@@ -8,7 +8,7 @@ use App\Forizon\Tensors\Matrix;
 
 class CrossEntropy implements LossFunction, Classificable
 {
-    public function calc(Matrix $output, Matrix $target): float {
+    public function calculate(Matrix $output, Matrix $target): float {
         return $target->negate()->multiply(
             $output->lowerRange(1e-8)->log()
         )->mean()->mean();

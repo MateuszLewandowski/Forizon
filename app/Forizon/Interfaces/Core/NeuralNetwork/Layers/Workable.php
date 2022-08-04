@@ -8,6 +8,6 @@ use Illuminate\Support\Collection;
 
 interface Workable
 {
-    public function backPropagation(Collection $labels, Optimizer $optimizer): array;
+    public function backPropagation(Collection $expected, Optimizer $optimizer): array;
     public function determineGradient(Matrix $output, Matrix $expected): Matrix;
 }

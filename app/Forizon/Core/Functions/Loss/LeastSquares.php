@@ -8,7 +8,7 @@ use App\Forizon\Tensors\Matrix;
 
 class LeastSquares implements LossFunction, Regressable
 {
-    public function calc(Matrix $output, Matrix $target): float {
+    public function calculate(Matrix $output, Matrix $target): float {
         return $output->subtract($target)->square()->mean()->mean();
     }
     public function differentive(Matrix $output, Matrix $target): Matrix {
