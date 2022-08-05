@@ -16,5 +16,5 @@ interface Algebraic
     public function floor(): mixed;
     public function ceil(): mixed;
     public function negate(): mixed;
-
+    public function square(): mixed;
 }

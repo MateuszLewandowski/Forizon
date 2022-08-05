@@ -6,6 +6,7 @@ use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Output;
 use App\Forizon\Core\Functions\Activation\Softmax;
 use App\Forizon\Core\Functions\Loss\CrossEntropy;
 use App\Forizon\Interfaces\Core\Optimizer;
+use App\Forizon\Interfaces\Core\Tensor;
 use Illuminate\Support\Collection;
 use App\Forizon\Tensors\Matrix;
 use InvalidArgumentException;
@@ -80,11 +81,11 @@ class Multiclassifier implements Output
      * @param Optimizer $optimizer
      * @return array
      */
-    public function backPropagation(Collection $expected, Optimizer $optimizer): array {
+    public function backPropagation(Collection $labels, Optimizer $optimizer): array {
         $matched = [];
         for ($i = 0; $i < count($this->classes); $i++) {
-            for ($j = 0; $j < $expected->count(); $j++) {
-                $matched[$i][$j] = $expected->value($j) === $this->classes[$i] ? 1.0 : 0.0;
+            for ($j = 0; $j < $labels->count(); $j++) {
+                $matched[$i][$j] = $labels->value($j) === $this->classes[$i] ? 1.0 : 0.0;
             }
         }
         $expected = new Matrix($matched);

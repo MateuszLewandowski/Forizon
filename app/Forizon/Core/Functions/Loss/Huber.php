@@ -19,7 +19,7 @@ class Huber implements LossFunction, Regressable
     public function calculate(Matrix $output, Matrix $target): float {
         $pre = $target->subtract($output);
         for ($i = 0; $i < $target->rows; $i++) {
-            for ($j = 0; $j < $target->cols; $j++) {
+            for ($j = 0; $j < $target->columns; $j++) {
                 $pre->data[$i][$j] = (sqrt(1.0 + ($pre->data[$i][$j] / $this->alpha) ** 2) - 1.0);
             }
         }

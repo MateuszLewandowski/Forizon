@@ -51,6 +51,7 @@ class CollectionConfiguration extends Configuration
             if (!$flag) {
                 throw new InvalidArgumentException();
             }
+            unset($this->used);
         } catch (InvalidArgumentException $e) {
 
         } catch (TypeErrorException $e) {

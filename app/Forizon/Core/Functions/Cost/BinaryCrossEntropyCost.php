@@ -2,7 +2,7 @@
 
 namespace App\Forizon\Core\Functions\Cost;
 
-use App\Forizon\Interfaces\Core\Cost as CostFunction;
+use App\Forizon\Interfaces\Core\Functions\Cost as CostFunction;
 
 /**
  * @see https://medium.com/@zeeshanmulla/cost-activation-loss-function-neural-network-deep-learning-what-are-these-91167825a4de
@@ -11,7 +11,7 @@ use App\Forizon\Interfaces\Core\Cost as CostFunction;
  */
 class BinaryCrossEntropyCost implements CostFunction
 {
-    public function score(array $predictions, array $labels): float {
+    public function evaluate(array $predictions, array $labels): float {
         if (count($predictions) !== count($labels)) {
             //
         }

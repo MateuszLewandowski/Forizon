@@ -70,7 +70,7 @@ abstract class Configuration
      * @return array
      */
     public function getPropertiesAsArray(): array {
-        return get_mangled_object_vars($this);
+        return get_object_vars($this);
     }
 
     /**

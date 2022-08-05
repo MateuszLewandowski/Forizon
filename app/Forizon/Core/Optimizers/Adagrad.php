@@ -3,8 +3,9 @@
 namespace App\Forizon\Core\Optimizers;
 
 use App\Forizon\Interfaces\Core\Optimizer;
-use App\Forizon\Parameters\Attribute;
 use App\Forizon\Interfaces\Core\Tensor;
+use App\Forizon\Parameters\Attribute;
+use App\Forizon\Tensors\Matrix;
 
 /**
  * @see https://towardsdatascience.com/optimizers-for-training-neural-network-59450d71caf6
@@ -18,15 +19,15 @@ class Adagrad implements Optimizer
         $this->learning_rate = $learning_rate;
     }
 
-    public function init(Attribute $attribute): void {
+    public function initialize(Attribute $attribute): void {
         $class = get_class($attribute->value);
         $this->memory[$attribute->id] = $class::fillZeros(...$attribute->value->shape());
     }
 
-    public function run(string $id, Tensor $gradient): Tensor {
+    public function run(string $id, Tensor $tensor): Matrix {
         $norm = $this->memory[$id];
-        $norm = $norm->add($gradient->square());
+        $norm = $norm->add($tensor->square());
         $this->memory[$id] = $norm;
-        return $gradient->multiply($this->learning_rate)->divide($norm->sqrt()->clipLower());
+        return $tensor->multiply($this->learning_rate)->divide($norm->sqrt()->clipLower());
     }
 }

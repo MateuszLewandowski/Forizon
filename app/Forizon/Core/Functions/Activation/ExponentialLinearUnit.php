@@ -7,11 +7,11 @@ use App\Forizon\Tensors\Matrix;
 
 class ExponentialLinearUnit implements ActivationFunction
 {
-    private float $alpha;
-
-    public function __construct(float $alpha = 1.0) {
-        $this->alpha = $alpha;
-    }
+    /**
+     * @todo Validation $alpha.
+     * @param float $alpha
+     */
+    public function __construct(private float $alpha = 1.0) {}
 
     public function use(Matrix $matrix): Matrix {
         for ($i = 0; $i < $matrix->rows; $i++) {

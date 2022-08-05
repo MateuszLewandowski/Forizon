@@ -5,6 +5,7 @@ namespace App\Services\System;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Carbon;
 use App\Abstracts\System\File as AbstractFile;
+use InvalidArgumentException;
 
 /**
  * Class File

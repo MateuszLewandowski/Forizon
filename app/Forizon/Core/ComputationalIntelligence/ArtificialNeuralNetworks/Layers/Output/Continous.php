@@ -12,10 +12,10 @@ use InvalidArgumentException;
 
 class Continous implements Output
 {
+    private int $neurons;
+    private Matrix $input;
+
     public function __construct(
-        private int $neurons,
-        private Matrix $input,
-        private Matrix $output,
         private LossFunction $lossFunction = new LeastSquares,
     ){}
 
@@ -71,8 +71,8 @@ class Continous implements Output
      * @param Optimizer $optimizer
      * @return array
      */
-    public function backPropagation(Collection $expected, Optimizer $optimizer): array {
-        $expected = new Matrix([$expected->all()]);
+    public function backPropagation(Collection $labels, Optimizer $optimizer): array {
+        $expected = new Matrix([$labels->all()]);
         $loss = $this->lossFunction->calculate($this->input, $expected);
         $gradient = $this->determineGradient($this->input, $expected);
         return ['loss' => $loss, 'gradient' => $gradient];

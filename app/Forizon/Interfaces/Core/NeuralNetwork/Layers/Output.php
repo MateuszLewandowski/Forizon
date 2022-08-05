@@ -2,6 +2,11 @@
 
 namespace App\Forizon\Interfaces\Core\NeuralNetwork\Layers;
 
-interface Output extends Layer, Workable {
+use App\Forizon\Interfaces\Core\Optimizer;
+use Illuminate\Support\Collection;
+use App\Forizon\Tensors\Matrix;
 
+interface Output extends Layer, Workable
+{
+    public function backPropagation(Collection $labels, Optimizer $optimizer): array;
 }

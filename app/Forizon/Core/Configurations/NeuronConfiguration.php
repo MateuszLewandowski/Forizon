@@ -6,13 +6,53 @@ use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\I
 use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Output;
 use App\Forizon\Interfaces\Core\Optimizer;
 use App\Forizon\Abstracts\Configuration;
+use Psy\Exception\TypeErrorException;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use App\Forizon\Interfaces\Core\Functions\{
     Loss as LossFunction,
     Cost as CostFunction,
 };
+use App\Forizon\Validators\Configuration as Validator;
+use Illuminate\Support\Str;
+
 
 class NeuronConfiguration extends Configuration
 {
+    private const REQUIRED = [
+        'optimizer', 'lossFunction', 'costFunction', 'input', 'output'
+    ];
+
+    /**
+     * @todo Exception message and status code.
+     * @param array $properties
+     */
+    public function __construct(array $properties)
+    {
+        try {
+            foreach ($properties as $key => $value) {
+                if (!property_exists($this, $key)) {
+                    Log::warning("Attempt to assign a value to a non-existent key {$key} in CollectionConfiguration.");
+                    continue;
+                }
+                $method = Str::camel(implode('', ['validate', ucfirst($key)]));
+                if (method_exists(Validator::class, $method)) {
+                    Validator::{$method}($value);
+                }
+                $this->set($key, $value);
+            }
+            foreach (self::REQUIRED as $name) {
+                if (!in_array($name, $this->used)) {
+                    throw new InvalidArgumentException();
+                }
+            }
+            unset($this->used);
+        } catch (InvalidArgumentException $e) {
+            //
+        } catch (TypeErrorException $e) {
+            //
+        }
+    }
     /**
      * Training samples quantity
      *

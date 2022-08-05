@@ -2,11 +2,11 @@
 
 namespace App\Forizon\Core\Functions\Cost;
 
-use App\Forizon\Interfaces\Core\Cost as CostFunction;
+use App\Forizon\Interfaces\Core\Functions\Cost as CostFunction;
 
 class SymmetricMeanAbsolutePercentageError implements CostFunction
 {
-    public function score(array $predictions, array $labels): float {
+    public function evaluate(array $predictions, array $labels): float {
         if (empty($predictions)) {
             return 0.0;
         }

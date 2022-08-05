@@ -36,7 +36,6 @@ abstract class File
      */
     protected ?string $directory = null;
 
-
     public abstract function store(string|array $files, string|array $name, string $extension = 'txt', string $directory = ''): array;
 
     public function load(array|string $files, bool $strict = true) {

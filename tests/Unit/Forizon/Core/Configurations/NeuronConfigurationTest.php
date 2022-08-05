@@ -9,14 +9,17 @@ use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\H
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Output\{
     BinaryClassifier, Continous, Multiclassifier
 };
+use App\Forizon\Core\Configurations\NeuronConfiguration;
+use App\Forizon\Core\Functions\Activation\LeakyRectifiedLinearUnit;
 use App\Forizon\Core\Optimizers\Adam;
 use App\Forizon\Core\Functions\Loss\Huber;
 use App\Forizon\Core\Functions\Cost\MeanSquaredError;
+use App\Forizon\Core\Functions\Loss\LeastSquares;
 use PHPUnit\Framework\TestCase;
 
 class NeuronConfigurationTest extends TestCase
 {
-    private function getBasicConfiguration(): array {
+    private function getBasicConfigurationWithOneHiddenLayerAndFilledCriticalParameters(): array {
         return [
             'batch_size' => 16,
             'epochs' => 100,
@@ -25,27 +28,43 @@ class NeuronConfigurationTest extends TestCase
             'window' => 5,
             'hold_out' => .2,
             'randomize' => true,
-            'optimizer' => new Adam(),
-            'lossFunction' => new Huber(),
-            'costFunction' => new MeanSquaredError(),
-            'input' => new Input,
+            'optimizer' => new Adam,
+            'lossFunction' => new Huber,
+            'costFunction' => new MeanSquaredError,
+            'input' => new Input(neurons: 32),
             'hiddens' => [
-
+                new Dense(neurons: 32, alpha: .001, is_biased: true),
+                new Activation(new LeakyRectifiedLinearUnit(leaky: .15)),
+                new Noise(standard_deviation: .1),
+                new Dropout(coefficient: .2)
             ],
-            'output' => 100,
+            'output' => new Continous(new LeastSquares),
         ];
     }
 
     public function testCreateCollectionConfigurationInstanceExpectsSuccess()
     {
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
+        $collectionConfiguration = new NeuronConfiguration($this->getBasicConfigurationWithOneHiddenLayerAndFilledCriticalParameters());
         $flag = true;
         $config = $collectionConfiguration->getPropertiesAsArray();
-        foreach ($this->basic_configuration as $key => $value) {
-            if ($value !== $config[$key]) {
+        foreach ($this->getBasicConfigurationWithOneHiddenLayerAndFilledCriticalParameters() as $key => $value) {
+            if (!isset($config[$key])) {
                 $flag = false;
+                break;
+            }
+            if (gettype($value) === 'object' and $value != $config[$key]) {
+                $flag = false;
+                break;
+            }
+            if (gettype($value) === 'array' and $value != $config[$key]) {
+                $flag = false;
+                break;
+            }
+            if (gettype($value) !== 'object' and gettype($value) !== 'array' and $value !== $config[$key]) {
+                $flag = false;
+                break;
             }
         }
-        $this->assertTrue($collectionConfiguration instanceof CollectionConfiguration and $flag);
+        $this->assertTrue($collectionConfiguration instanceof NeuronConfiguration and $flag);
     }
 }

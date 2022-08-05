@@ -84,6 +84,14 @@ class Matrix implements Matrixable, Tensor {
         return $this->rows === $this->columns;
     }
 
+    function asColumnVector(int $index = 0): ColumnVector {
+        return new ColumnVector(array_column($this->data, $index));
+    }
+
+    function asRowVector(int $index = 0): RowVector {
+        return new RowVector($this->data[$index]);
+    }
+
     /**
      * @see App\Forizon\Interfaces\Core\Tensor\Arithmetical
      */

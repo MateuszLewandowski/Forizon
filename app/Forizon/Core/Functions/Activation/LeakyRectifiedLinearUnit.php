@@ -7,11 +7,11 @@ use App\Forizon\Tensors\Matrix;
 
 class LeakyRectifiedLinearUnit implements ActivationFunction
 {
-    private float $leaky;
-
-    public function __construct(float $leaky = 0.1) {
-        $this->leaky = $leaky;
-    }
+    /**
+     * @todo Validation $leaky.
+     * @param float $leaky
+     */
+    public function __construct(private float $leaky = 0.1) {}
 
     public function use(Matrix $matrix): Matrix {
         for ($i = 0; $i < $matrix->rows; $i++) {

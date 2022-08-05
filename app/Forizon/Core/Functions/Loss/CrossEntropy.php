@@ -16,7 +16,7 @@ class CrossEntropy implements LossFunction, Classificable
 
     public function differentive(Matrix $output, Matrix $target): Matrix {
         return $output->subtract($target)->divide(
-            Matrix::fillOnes($target->rows, $target->cols)
+            Matrix::fillOnes($target->rows, $target->columns)
                 ->subtract($output)
                 ->multiply($output)
                 ->lowerRange(1e-8)

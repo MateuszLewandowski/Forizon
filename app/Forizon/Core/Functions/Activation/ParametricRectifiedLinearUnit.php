@@ -10,11 +10,11 @@ use App\Forizon\Tensors\Matrix;
  */
 class ParametricRectifiedLinearUnit implements ActivationFunction
 {
-    private float $beta;
-
-    public function __construct(float $beta = 0.0) {
-        $this->beta = $beta;
-    }
+    /**
+     * @todo Validation $beta.
+     * @param float $beta
+     */
+    public function __construct(private float $beta = 0.0) {}
 
     public function use(Matrix $matrix): Matrix {
         for ($i = 0; $i < $matrix->rows; $i++) {
