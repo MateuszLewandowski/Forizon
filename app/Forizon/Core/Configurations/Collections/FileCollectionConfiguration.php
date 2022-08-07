@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Forizon\Core\Configurations;
+namespace App\Forizon\Core\Configurations\Collections;
 
 use App\Forizon\Abstracts\Core\CollectionConfiguration;
 use Psy\Exception\TypeErrorException;
