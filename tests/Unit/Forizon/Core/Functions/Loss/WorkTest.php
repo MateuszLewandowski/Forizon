@@ -12,7 +12,7 @@ class WorkTest extends TestCase
     private string $namespace = 'Core\Functions\Loss';
     private int $rows = 4;
     private int $columns = 4;
-    private float $loss_range = 8.0;
+    private float $loss_range = 12.0;
 
     private function getDefaultsInputAndOutputMatrixes(): array {
         $matrix = Matrix::fillRandomize($this->rows, $this->columns);

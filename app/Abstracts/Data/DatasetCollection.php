@@ -6,7 +6,7 @@ use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class Collection
+abstract class DatasetCollection
 {
     /**
      * @var float[] $samples

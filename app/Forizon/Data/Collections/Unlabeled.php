@@ -2,12 +2,12 @@
 
 namespace App\Forizon\Data\Collections;
 
-use App\Abstracts\Data\Collection;
+use App\Abstracts\Data\DatasetCollection;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
-class Unlabeled extends Collection
+class Unlabeled extends DatasetCollection
 {
     public function __construct(array $samples = []) {
         try {

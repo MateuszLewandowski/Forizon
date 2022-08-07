@@ -11,7 +11,7 @@ class Noise implements Hidden
 {
     private int $neurons;
 
-    public function __construct(private float $standard_deviation) {
+    public function __construct(private float $standard_deviation = 1.0) {
         try {
             if ($standard_deviation < 0.0) {
                 throw new InvalidArgumentException();
@@ -55,7 +55,7 @@ class Noise implements Hidden
      * @return Matrix
      */
     public function feedForward(Matrix $matrix): Matrix {
-        return $matrix->add($this->createNoise($matrix->rows, $matrix->columns));
+        return $matrix->add($this->generateNoise($matrix->rows, $matrix->columns));
     }
 
     /**
@@ -82,7 +82,7 @@ class Noise implements Hidden
      * @param integer $columns
      * @return Matrix
      */
-    private function createNoise(int $rows, int $columns): Matrix {
+    private function generateNoise(int $rows, int $columns): Matrix {
         return Matrix::fillGaussian($rows, $columns)->multiply($this->standard_deviation);
     }
 }

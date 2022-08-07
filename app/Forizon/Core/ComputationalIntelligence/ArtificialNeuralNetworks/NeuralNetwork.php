@@ -2,49 +2,31 @@
 
 namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks;
 
+use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Activation;
+use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Dense;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Input;
-use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\{
-    Placeholder, Output, Layer, Hidden,
-};
-use App\Forizon\Interfaces\Core\Tensor;
-use App\Forizon\Tensors\Matrix;
-use App\Forizon\Interfaces\Core\Tensor\Collection;
+use App\Forizon\Core\Functions\Activation\RectifiedLinearUnit;
 use App\Forizon\Interfaces\Core\Optimizer;
+use App\Abstracts\Data\DatasetCollection;
+use App\Forizon\Interfaces\Core\Tensor;
+use App\Forizon\Core\Optimizers\Adam;
+use App\Forizon\Tensors\Matrix;
 use Exception;
+use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\{
+    Placeholder, Output,
+};
 
 final class NeuralNetwork
 {
-    /**
-     * Input layer. Placeholder for an input vector.
-     *
-     * @var Input
-     */
-    private Placeholder $input;
-
-    /**
-     * An array contains hidden layers.
-     * - Dense
-     * - Activation
-     * - Dropout
-     * - Noise
-     *
-     * @var array<Hidden>
-     */
-    private array $hiddens;
-
-    /**
-     * Output layer.
-     *
-     * @var Output
-     */
-    private Output $output;
-
-    /**
-     * Optimizer
-     *
-     * @var Optimizer
-     */
-    private Optimizer $optimizer;
+    public function __construct(
+        private Placeholder $input = new Input(16),
+        private array $hiddens = [
+            new Dense(64),
+            new Activation(new RectifiedLinearUnit),
+        ],
+        private Output $output,
+        private Optimizer $optimizer = new Adam,
+    ){}
 
     public function getLayers(): array {
         return [
@@ -52,21 +34,6 @@ final class NeuralNetwork
             ...$this->hiddens,
             $this->output
         ];
-    }
-
-    public function setInputLayer(Placeholder $input): self {
-        $this->input = $input;
-        return $this;
-    }
-
-    public function setOutputLayer(Output $output): self {
-        $this->output = $output;
-        return $this;
-    }
-
-    public function setHiddenLayers(array $hiddens): self {
-        $this->hiddens = $hiddens;
-        return $this;
     }
 
     public function initialize(): self {
@@ -109,19 +76,19 @@ final class NeuralNetwork
 
     }
 
-    public function cycle(Collection $dataset): float {
+    public function cycle(DatasetCollection $datasetCollection): float {
         try {
-            $input = Matrix::create($dataset->samples)->transpose();
+            $input = Matrix::create($datasetCollection->samples)->transpose();
             $this->feedForward($input);
-            return $this->backPropagation($dataset->labels);
+            return $this->backPropagation($datasetCollection->labels);
         } catch (Exception $e) {
             // @todo
         }
     }
 
-    public function touch(Collection $dataset): Tensor {
+    public function touch(DatasetCollection $datasetCollection): Tensor {
         try {
-            $input = Matrix::create($dataset->samples)->transpose();
+            $input = Matrix::create($datasetCollection->samples)->transpose();
             foreach ($this->getLayers() as $layer) {
                 $input = $layer->touch($input);
             }

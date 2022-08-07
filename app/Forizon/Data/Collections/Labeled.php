@@ -2,12 +2,12 @@
 
 namespace App\Forizon\Data\Collections;
 
-use App\Abstracts\Data\Collection;
+use App\Abstracts\Data\DatasetCollection;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
-class Labeled extends Collection
+class Labeled extends DatasetCollection
 {
     public function __construct(array $samples = [], array $labels = []) {
         try {
@@ -30,18 +30,25 @@ class Labeled extends Collection
         }
     }
 
+    /**
+     * Veryfi if that splitting is correct (testing - training switch positions?)
+     *
+     * @param float $ratio
+     * @return array<Labeled,Labeled>
+     */
     public function split(float $ratio = 0.2): array {
         $i = (int) floor($ratio * count($this->samples)) + 1;
-        $left = new self(
+        $training = new self(
             array_slice($this->samples, 0, $i),
             array_slice($this->labels, 0, $i)
         );
-        $right = new self(
+        $testing = new self(
             array_slice($this->samples, $i),
             array_slice($this->labels, $i)
         );
-        return [$left, $right];
+        return [$training, $testing];
     }
+
     public function stack(iterable $datasets): self {
         try {
             $labels = $samples = [];
@@ -61,6 +68,7 @@ class Labeled extends Collection
             throw $e;
         }
     }
+
     public function stratify(): array {
         $data = [];
         foreach ($this->labels as $i => $label) {

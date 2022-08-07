@@ -21,6 +21,7 @@ class NeuronConfigurationTest extends TestCase
 {
     private function getBasicConfigurationWithOneHiddenLayerAndFilledCriticalParameters(): array {
         return [
+            'model' => 'perceptron',
             'batch_size' => 16,
             'epochs' => 100,
             'alpha' => 1e-4,

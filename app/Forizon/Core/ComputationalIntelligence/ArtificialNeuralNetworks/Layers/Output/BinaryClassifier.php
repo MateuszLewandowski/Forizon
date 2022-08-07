@@ -17,7 +17,7 @@ class BinaryClassifier implements Output
     private int $neurons;
 
     public function __construct(
-        private array $classes,
+        private array $classes = [0, 1],
         private LossFunction $lossFunction = new CrossEntropy,
         private ActivationFunction $activationFunction = new Sigmoid,
     ){

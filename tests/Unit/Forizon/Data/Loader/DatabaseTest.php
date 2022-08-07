@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Forizon\Data\Loader;
 
-use App\Forizon\Core\Configurations\CollectionConfiguration;
+use App\Forizon\Core\Configurations\Collections\DatabaseCollectionConfiguration;
 use App\Forizon\Data\Loaders\Database;
 use Tests\TestCase;
 
 class DatabaseTest extends TestCase
 {
     private array $basic_configuration = [
-        'table' => 'test_time_series',
+        'source' => 'test_time_series',
         'column_key' => 'key_1',
         'column_value' => 'value_1',
         'batches' => 100,
@@ -17,36 +17,36 @@ class DatabaseTest extends TestCase
 
     public function testCreateObjectInstanceExpectsSuccess()
     {
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $this->assertTrue($databaseLoader instanceof Database);
     }
 
     public function testGetColumnKeyDistinctExpectsSuccess()
     {
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $this->assertTrue($databaseLoader->getColumnKeyDistinct() > 0);
     }
 
     public function testGetColumnValueDistinctExpectsSuccess()
     {
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $this->assertTrue($databaseLoader->getColumnValueDistinct() > 0);
     }
 
     public function testGetTotalSamplesQuantityExpectsSuccess()
     {
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $this->assertTrue($databaseLoader->getTotalSamplesQuantity() > 0);
     }
 
     public function testLoadDefaultCollectionExpectsSuccess()
     {
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $collection = $databaseLoader->loadCollection();
         $this->assertTrue($collection->count() > 0);
     }
@@ -55,8 +55,8 @@ class DatabaseTest extends TestCase
     {
         $this->basic_configuration['column_key'] = 'key_2';
         $this->basic_configuration['column_value'] = 'value_2';
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $collection = $databaseLoader->loadCollection();
         $this->assertTrue($collection->count() > 0);
     }
@@ -65,8 +65,8 @@ class DatabaseTest extends TestCase
     {
         $this->basic_configuration['column_key'] = 'key_3';
         $this->basic_configuration['column_value'] = 'value_3';
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $collection = $databaseLoader->loadCollection();
         $this->assertTrue($collection->count() > 0);
     }
@@ -75,8 +75,8 @@ class DatabaseTest extends TestCase
     {
         $this->basic_configuration['column_key'] = 'key_4';
         $this->basic_configuration['column_value'] = 'value_4';
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $collection = $databaseLoader->loadCollection();
         $this->assertTrue($collection->count() > 0);
     }
@@ -84,8 +84,8 @@ class DatabaseTest extends TestCase
     public function testLoadCollectionWithDoubledBatchSizePairExpectsSuccess()
     {
         $this->basic_configuration['batches'] = 250;
-        $collectionConfiguration = new CollectionConfiguration($this->basic_configuration);
-        $databaseLoader = new Database($collectionConfiguration);
+        $databaseCollectionConfiguration = new DatabaseCollectionConfiguration($this->basic_configuration);
+        $databaseLoader = new Database($databaseCollectionConfiguration);
         $collection = $databaseLoader->loadCollection();
         $this->assertTrue($collection->count() > 0);
     }

@@ -17,7 +17,7 @@ class Dense implements Hidden
     private Attribute $biases;
 
     public function __construct(
-        private int $neurons,
+        private int $neurons = 32,
         private float $alpha = 0.0,
         private bool $is_biased = true,
         private Initializer $weightInitializer = new XavierOne,

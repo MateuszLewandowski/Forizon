@@ -2,7 +2,7 @@
 
 namespace App\Forizon\Data\Loaders;
 
-use App\Forizon\Core\Configurations\CollectionConfiguration;
+use App\Forizon\Core\Configurations\Collections\DatabaseCollectionConfiguration;
 use Illuminate\Database\Query\Builder;
 use App\Forizon\Abstracts\Data\Loader;
 use Illuminate\Support\Facades\Log;
@@ -18,11 +18,11 @@ class Database extends Loader
 
     private ?Builder $query = null;
 
-    public function __construct(CollectionConfiguration $collectionConfiguration)
+    public function __construct(DatabaseCollectionConfiguration $databaseCollectionConfiguration)
     {
         try {
-            $config = $collectionConfiguration->getPropertiesAsObject();
-            $this->table($config->table)
+            $config = $databaseCollectionConfiguration->getPropertiesAsObject();
+            $this->source($config->source)
                 ->researchableColumnKey($config->column_key)
                 ->researchableColumnValue($config->column_value)
                 ->groupByInterval($config?->group_by_interval)
@@ -87,7 +87,7 @@ class Database extends Loader
         }
         try {
             $where = [];
-            $query = DB::table($this->table)
+            $query = DB::table($this->source)
                 ->select("$this->column_key as key", "$this->column_value as value");
             if (!is_null($this->dateTimeFrom)) {
                 $query = $query->whereDate('key', '>=', $this->DateTimeFrom->format(self::DEFAULT_TIMESTAMP));
@@ -139,6 +139,66 @@ class Database extends Loader
         } catch (PDOException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
             throw $e;
+        }
+    }
+
+    /**
+     * @todo Check if source (table) exists.
+     *
+     * @param string $source
+     * @return self
+     */
+    public function source(string $source): self {
+        try {
+            // if (!Schema::hassource($source)) {
+            //     throw new InvalidArgumentException();
+            // }
+            $this->source = $source;
+            return $this;
+        } catch (InvalidArgumentException $e) {
+            //
+        }
+    }
+
+    /**
+     * @todo Check if source and column exists and its data type.
+     *
+     * @param string $column_key
+     * @return self
+     */
+    public function researchableColumnKey(string $column_key): self {
+        try {
+            // if (!$this->source)  {
+            //     throw new InvalidArgumentException();
+            // }
+            // if (!Schema::hasColumn($this->source, $column_key)) {
+            //     throw new InvalidArgumentException();
+            // }
+            $this->column_key = $column_key;
+            return $this;
+        } catch (InvalidArgumentException $e) {
+            //
+        }
+    }
+
+    /**
+     * @todo Check if source and column exists and its data type.
+     *
+     * @param string $column_value
+     * @return self
+     */
+    public function researchableColumnValue(string $column_value): self {
+        try {
+            // if (!$this->source)  {
+            //     throw new InvalidArgumentException();
+            // }
+            // if (!Schema::hasColumn($this->source, $column_value)) {
+            //     throw new InvalidArgumentException();
+            // }
+            $this->column_value = $column_value;
+            return $this;
+        } catch (InvalidArgumentException $e) {
+            //
         }
     }
 }

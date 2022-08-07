@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Forizon\Core\Configurations;
+namespace App\Forizon\Abstracts\Core;
 
 use App\Forizon\Abstracts\Configuration;
 use Psy\Exception\TypeErrorException;
@@ -11,59 +11,14 @@ use DateTime;
 /**
  * In case that there will be DateTimeFrom, DateTimeTo and batches null's. All available samples will be returned.
  */
-class CollectionConfiguration extends Configuration
+abstract class CollectionConfiguration extends Configuration
 {
-    private const REQUIRED = [
-        'table', 'column_key', 'column_value',
-    ];
-
-    private const REQUIRED_ONE_OF = [
-        'batches', 'dateTimeFrom', 'dateTimeTo',
-    ];
-
     /**
-     * @todo Exception message and status code.
-     *
-     * @param array $properties
-     */
-    public function __construct(array $properties)
-    {
-        try {
-            foreach ($properties as $key => $value) {
-                if (!property_exists($this, $key)) {
-                    Log::warning("Attempt to assign a value to a non-existent key {$key} in CollectionConfiguration.");
-                    continue;
-                }
-                $this->set($key, $value);
-            }
-            foreach (self::REQUIRED as $name) {
-                if (!in_array($name, $this->used)) {
-                    throw new InvalidArgumentException();
-                }
-            }
-            $flag = false;
-            foreach (self::REQUIRED_ONE_OF as $name) {
-                if (in_array($name, $this->used)) {
-                    $flag = true;
-                    break;
-                }
-            }
-            if (!$flag) {
-                throw new InvalidArgumentException();
-            }
-            unset($this->used);
-        } catch (InvalidArgumentException $e) {
-
-        } catch (TypeErrorException $e) {
-
-        }
-    }
-    /**
-     * Table from which researchable data will be taken.
+     * Table or file from which researchable data will be taken.
      *
      * @var string
      */
-    public string $table;
+    public string $source;
 
     /**
      * A column in a previously edited table whose data is mixed type, but string or date are prefered.

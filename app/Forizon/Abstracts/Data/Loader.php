@@ -15,7 +15,7 @@ use DateTime;
 abstract class Loader
 {
     public array $collection;
-    public string $table;
+    public string $source;
     public string $column_key;
     public string $column_value;
     public string $group_by_interval = 'd';
@@ -30,64 +30,22 @@ abstract class Loader
     public ?int $batches = null;
 
     /**
-     * @todo Check if table exists.
-     *
-     * @param string $table
+     * @param string $source
      * @return self
      */
-    public function table(string $table): self {
-        try {
-            // if (!Schema::hasTable($table)) {
-            //     throw new InvalidArgumentException();
-            // }
-            $this->table = $table;
-            return $this;
-        } catch (InvalidArgumentException $e) {
-            //
-        }
-    }
+    public abstract function source(string $source): self;
 
     /**
-     * @todo Check if table and column exists and its data type.
-     *
      * @param string $column_key
      * @return self
      */
-    public function researchableColumnKey(string $column_key): self {
-        try {
-            // if (!$this->table)  {
-            //     throw new InvalidArgumentException();
-            // }
-            // if (!Schema::hasColumn($this->table, $column_key)) {
-            //     throw new InvalidArgumentException();
-            // }
-            $this->column_key = $column_key;
-            return $this;
-        } catch (InvalidArgumentException $e) {
-            //
-        }
-    }
+    public abstract function researchableColumnKey(string $column_key): self;
 
     /**
-     * @todo Check if table and column exists and its data type.
-     *
      * @param string $column_value
      * @return self
      */
-    public function researchableColumnValue(string $column_value): self {
-        try {
-            // if (!$this->table)  {
-            //     throw new InvalidArgumentException();
-            // }
-            // if (!Schema::hasColumn($this->table, $column_value)) {
-            //     throw new InvalidArgumentException();
-            // }
-            $this->column_value = $column_value;
-            return $this;
-        } catch (InvalidArgumentException $e) {
-            //
-        }
-    }
+    public abstract function researchableColumnValue(string $column_value): self;
 
     /**
      * The way in which the samples have to be grouped. default daily.
@@ -182,7 +140,7 @@ abstract class Loader
     }
 
     /**
-     * @todo Validate if date exists in table's column key.
+     * @todo Validate if date exists in source's column key.
      * @param DateTime $dateTimeFrom
      * @return self
      */
@@ -192,7 +150,7 @@ abstract class Loader
     }
 
     /**
-     * @todo Validate if date exists in table's column key.
+     * @todo Validate if date exists in source's column key.
      * @param DateTime $dateTimeFrom
      * @return self
      */

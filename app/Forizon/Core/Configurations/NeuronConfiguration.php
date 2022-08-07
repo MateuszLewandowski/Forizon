@@ -2,25 +2,27 @@
 
 namespace App\Forizon\Core\Configurations;
 
-use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Input;
+use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Activation;
+use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Dense;
+use App\Forizon\Interfaces\Core\Configurations\NeuralNetworkConfiguration;
+use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Placeholder;
 use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Output;
+use App\Forizon\Validators\Configuration as Validator;
 use App\Forizon\Interfaces\Core\Optimizer;
 use App\Forizon\Abstracts\Configuration;
 use Psy\Exception\TypeErrorException;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Illuminate\Support\Str;
 use App\Forizon\Interfaces\Core\Functions\{
     Loss as LossFunction,
     Cost as CostFunction,
 };
-use App\Forizon\Validators\Configuration as Validator;
-use Illuminate\Support\Str;
 
-
-class NeuronConfiguration extends Configuration
+class NeuronConfiguration extends Configuration implements NeuralNetworkConfiguration
 {
     private const REQUIRED = [
-        'optimizer', 'lossFunction', 'costFunction', 'input', 'output'
+        'model', 'optimizer', 'lossFunction', 'costFunction', 'input', 'output'
     ];
 
     /**
@@ -32,12 +34,27 @@ class NeuronConfiguration extends Configuration
         try {
             foreach ($properties as $key => $value) {
                 if (!property_exists($this, $key)) {
-                    Log::warning("Attempt to assign a value to a non-existent key {$key} in CollectionConfiguration.");
+                    Log::warning("Attempt to assign a value to a non-existent key {$key} in NeuronConfiguration.");
                     continue;
                 }
                 $method = Str::camel(implode('', ['validate', ucfirst($key)]));
                 if (method_exists(Validator::class, $method)) {
                     Validator::{$method}($value);
+                }
+                if ($key === 'hiddens') {
+                    $required = [Dense::class => false, Activation::class => false];
+                    foreach ($value as $layer) {
+                        foreach ($required as $name => &$flag) {
+                            if ($layer instanceof $name) {
+                                $flag = true;
+                            }
+                        }
+                    }
+                    foreach ($required as $flag) {
+                        if ($flag === false) {
+                            throw new InvalidArgumentException();
+                        }
+                    }
                 }
                 $this->set($key, $value);
             }
@@ -53,6 +70,14 @@ class NeuronConfiguration extends Configuration
             //
         }
     }
+
+    /**
+     * Model name
+     *
+     * @var string
+     */
+    protected string $model;
+
     /**
      * Training samples quantity
      *
@@ -122,9 +147,9 @@ class NeuronConfiguration extends Configuration
     /**
      * Input layer - A placeholder for the an input vector.
      *
-     * @var Input
+     * @var Placeholder
      */
-    protected Input $input;
+    protected Placeholder $input;
 
     /**
      * Array that contains only hidden layers

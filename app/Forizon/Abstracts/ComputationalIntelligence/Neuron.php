@@ -2,26 +2,28 @@
 
 namespace App\Forizon\Abstracts\ComputationalIntelligence;
 
-use App\Forizon\Core\Optimizers\{
-    AdaDelta, Adagrad, Adam, GradientDescent, MiniBatchGradientDescent, Momentum, NesterovAcceleratedGradient, StochasticGradientDescent
-};
-use App\Forizon\Core\Functions\Activation\{
-    BinaryStep, ExponentialLinearUnit, Gauss, HyperbolicTangent, LeakyRectifiedLinearUnit, Linear, ParametricRectifiedLinearUnit, RectifiedLinearUnit,
-    ScaledExponentialLinearUnit, Sigmoid, Softmax, SoftPlus, Softsign, Swish, ThresholdedRectifiedLinearUnit
-};
-use App\Forizon\Core\Functions\Cost\{
-    BinaryCrossEntropyCost, CategoricalCrossEnthopyCost, MeanAbsoluteError, MeanError, MeanSquaredError, MedianAbsoluteError, RootMeanSquaredError, RSquared, SymmetricMeanAbsolutePercentageError
-};
-use App\Forizon\Core\Functions\Loss\{
-    CrossEntropy, Exponentional, Hellinger, Huber, KullbackLeibler, LeastSquares, Quadratic
-};
+// use App\Forizon\Core\Optimizers\{
+//     AdaDelta, Adagrad, Adam, GradientDescent, MiniBatchGradientDescent, Momentum, NesterovAcceleratedGradient, StochasticGradientDescent
+// };
+// use App\Forizon\Core\Functions\Activation\{
+//     BinaryStep, ExponentialLinearUnit, Gauss, HyperbolicTangent, LeakyRectifiedLinearUnit, Linear, ParametricRectifiedLinearUnit, RectifiedLinearUnit,
+//     ScaledExponentialLinearUnit, Sigmoid, Softmax, SoftPlus, Softsign, Swish, ThresholdedRectifiedLinearUnit
+// };
+// use App\Forizon\Core\Functions\Cost\{
+//     BinaryCrossEntropyCost, CategoricalCrossEnthopyCost, MeanAbsoluteError, MeanError, MeanSquaredError, MedianAbsoluteError, RootMeanSquaredError, RSquared, SymmetricMeanAbsolutePercentageError
+// };
+// use App\Forizon\Core\Functions\Loss\{
+//     CrossEntropy, Exponentional, Hellinger, Huber, KullbackLeibler, LeastSquares, Quadratic
+// };
+use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\NeuralNetwork;
+use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Placeholder;
+use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Output;
+use App\Forizon\Interfaces\Core\Optimizer;
+use InvalidArgumentException;
 use App\Forizon\Interfaces\Core\Functions\{
     Loss as LossFunction,
     Cost as CostFunction,
 };
-use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\NeuralNetwork;
-use App\Forizon\Interfaces\Core\Optimizer;
-use Illuminate\Support\Collection;
 
 /**
  * For perceptrons & adaline.
@@ -102,6 +104,27 @@ abstract class Neuron
     protected CostFunction $costFunction;
 
     /**
+     * Input layer - A placeholder for the an input vector.
+     *
+     * @var Placeholder
+     */
+    protected Placeholder $input;
+
+    /**
+     * Array that contains only hidden layers
+     *
+     * @var array<Hidden>
+     */
+    protected array $hiddens;
+
+    /**
+     * Output layer
+     *
+     * @var Output
+     */
+    protected Output $output;
+
+    /**
      * Additional cost functions results excepts main CostFunction.
      *
      * @var array
@@ -129,7 +152,39 @@ abstract class Neuron
      */
     protected NeuralNetwork $neuralNetwork;
 
-    public abstract function train(Collection $collection): array;
-    public abstract function process(Collection $collection): array;
-    public abstract function predict(Collection $collection): array;
+    protected int $best_epoch = 0;
+    protected float $best_cost;
+    protected float $best_loss;
+    protected float $previous_loss;
+    protected ?array $trainingDataset;
+    protected ?array $testingDataset = null;
+    protected ?array $predictingDataset = null;
+
+    protected array $best_prediction_result;
+
+    public abstract function train(): self;
+    public abstract function process(): self;
+    public abstract function predict(): self;
+
+    protected function setEpochHistoryStamp(int $epoch, float $loss, float $cost, int $window_step, string $stop_condition): void {
+        $this->history[] = [
+            'epoch' => $epoch,
+            'loss' => $loss,
+            'cost' => $cost,
+            'window_step' => $window_step,
+            'stop_condition' => $stop_condition,
+        ];
+        return;
+    }
+
+    protected function generatePredictions(): array {
+        try {
+            if (is_null($this->datasetCollection)) {
+                throw new InvalidArgumentException();
+            }
+            return array_column($this->neuralNetwork->touch($this->datasetCollection)->data, 0);
+        } catch (InvalidArgumentException $e) {
+            throw $e;
+        }
+    }
 }

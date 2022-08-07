@@ -14,7 +14,8 @@ class ClassSearcher
     private array $base;
 
     public function __construct(private string $target, private bool $is_path = false) {
-        $this->app_name = ucfirst(config('app.name'));
+        // $this->app_name = ucfirst(config('app.name'));
+        $this->app_name = 'Forizon';
         $this->is_path = $is_path;
         $this->target = $target;
         $this->base = ['app', $this->app_name];
