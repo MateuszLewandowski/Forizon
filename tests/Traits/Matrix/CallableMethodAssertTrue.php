@@ -10,15 +10,18 @@ trait CallableMethodAssertTrue
     /**
      * Undocumented function
      *
-     * @param string $function
-     * @param float|null $parameter
+     * @param  string  $function
+     * @param  float|null  $parameter
      * @return void
+     *
      * @throws BadMethodCallException
+     *
      * @todo Exception message & code.
      */
-    private function runCallable(string $function, ?float $parameter = null): void {
+    private function runCallable(string $function, ?float $parameter = null): void
+    {
         $method = strtolower(preg_split('/(?=[A-Z])/', $function)[1]);
-        if (!is_callable($method)) {
+        if (! is_callable($method)) {
             throw new InvalidArgumentException();
         }
         $basic = Matrix::fill(3, 3, 0.01, 1.0);
@@ -28,7 +31,7 @@ trait CallableMethodAssertTrue
                 $flag = $parameter !== null
                     ? $mutated->data[$i][$j] === $method($basic->data[$i][$j], $parameter)
                     : $mutated->data[$i][$j] === $method($basic->data[$i][$j]);
-                if (!$flag) {
+                if (! $flag) {
                     $this->assertTrue(false);
                 }
             }

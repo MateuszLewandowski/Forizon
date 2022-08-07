@@ -12,18 +12,17 @@ final class Adaline extends Neuron
 
     public function __construct(NeuronConfiguration $neuronConfiguration)
     {
-
     }
 
-    public function train(Collection $collection): array {
-
+    public function train(Collection $collection): array
+    {
     }
 
-    public function process(Collection $collection): array {
-
+    public function process(Collection $collection): array
+    {
     }
 
-    public function predict(Collection $collection): array {
-
+    public function predict(Collection $collection): array
+    {
     }
 }

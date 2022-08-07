@@ -11,7 +11,8 @@ class AnalyzerTest extends TestCase
 {
     private const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
-    private function createDefaultCollection(): Collection {
+    private function createDefaultCollection(): Collection
+    {
         return collect([
             Carbon::create(2022, 1, 1)->format(self::DEFAULT_DATE_FORMAT) => 1000.00,
             Carbon::create(2022, 1, 2)->format(self::DEFAULT_DATE_FORMAT) => 2000.00,
@@ -75,6 +76,7 @@ class AnalyzerTest extends TestCase
         $mean = $analyzer->mean();
         $squared = $collection->map(function ($value) use ($mean) {
             $subtract = $value - $mean;
+
             return $subtract * $subtract;
         });
         $this->assertTrue($analyzer->variance() === $squared->sum() / $squared->count());

@@ -11,7 +11,8 @@ use App\Forizon\Interfaces\Core\Functions\Cost as CostFunction;
  */
 class BinaryCrossEntropyCost implements CostFunction
 {
-    public function evaluate(array $predictions, array $labels): float {
+    public function evaluate(array $predictions, array $labels): float
+    {
         if (count($predictions) !== count($labels)) {
             //
         }
@@ -22,6 +23,7 @@ class BinaryCrossEntropyCost implements CostFunction
         foreach ($predictions as $key => $prediction) {
             $error += $prediction * log($labels[$key]) + (1 - $prediction) * log(1 - $labels[$key]);
         }
+
         return -($error / count($predictions));
     }
 }

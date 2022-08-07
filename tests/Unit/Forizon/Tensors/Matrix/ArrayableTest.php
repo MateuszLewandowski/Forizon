@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Forizon\Tensors\Matrix;
 
-use PHPUnit\Framework\TestCase;
 use App\Forizon\Tensors\Matrix;
+use PHPUnit\Framework\TestCase;
 
 class ArrayableTest extends TestCase
 {

@@ -2,6 +2,7 @@
 
 namespace App\Forizon\Interfaces\Core;
 
-interface Distance {
+interface Distance
+{
     public function calc(array $a = [], array $b = []): float;
 }

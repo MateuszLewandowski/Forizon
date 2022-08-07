@@ -6,7 +6,8 @@ use App\Forizon\Interfaces\Core\Distance;
 
 class Manhattan implements Distance
 {
-    public function calc(array $a = [], array $b = []): float {
+    public function calc(array $a = [], array $b = []): float
+    {
         if (count($a) !== count($b)) {
             //
         }
@@ -14,6 +15,7 @@ class Manhattan implements Distance
         foreach ($a as $key => $value) {
             $distance += abs($value - $b[$key]);
         }
+
         return $distance;
     }
 }

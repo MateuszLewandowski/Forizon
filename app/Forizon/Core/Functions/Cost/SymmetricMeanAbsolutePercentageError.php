@@ -6,7 +6,8 @@ use App\Forizon\Interfaces\Core\Functions\Cost as CostFunction;
 
 class SymmetricMeanAbsolutePercentageError implements CostFunction
 {
-    public function evaluate(array $predictions, array $labels): float {
+    public function evaluate(array $predictions, array $labels): float
+    {
         if (empty($predictions)) {
             return 0.0;
         }
@@ -15,6 +16,7 @@ class SymmetricMeanAbsolutePercentageError implements CostFunction
             $label = $labels[$i];
             $error += 100.0 * abs(($prediction - $label) / ((abs($label) + abs($prediction)) ?: 1e-8));
         }
+
         return -($error / count($predictions));
     }
 }

@@ -16,14 +16,12 @@ namespace App\Forizon\Abstracts\ComputationalIntelligence;
 //     CrossEntropy, Exponentional, Hellinger, Huber, KullbackLeibler, LeastSquares, Quadratic
 // };
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\NeuralNetwork;
-use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Placeholder;
+use App\Forizon\Interfaces\Core\Functions\Cost as CostFunction;
+use App\Forizon\Interfaces\Core\Functions\Loss as LossFunction;
 use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Output;
+use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Placeholder;
 use App\Forizon\Interfaces\Core\Optimizer;
 use InvalidArgumentException;
-use App\Forizon\Interfaces\Core\Functions\{
-    Loss as LossFunction,
-    Cost as CostFunction,
-};
 
 /**
  * For perceptrons & adaline.
@@ -33,7 +31,7 @@ abstract class Neuron
     /**
      * Training samples quantity
      *
-     * @var int $batch_size > 0; default 16.
+     * @var int > 0; default 16.
      */
     protected int $batch_size = 16;
 
@@ -86,6 +84,7 @@ abstract class Neuron
 
     /**
      * @todo description
+     *
      * @var LossFunction
      */
     protected LossFunction $lossFunction;
@@ -99,6 +98,7 @@ abstract class Neuron
 
     /**
      * @todo description
+     *
      * @var CostFunction
      */
     protected CostFunction $costFunction;
@@ -153,20 +153,29 @@ abstract class Neuron
     protected NeuralNetwork $neuralNetwork;
 
     protected int $best_epoch = 0;
+
     protected float $best_cost;
+
     protected float $best_loss;
+
     protected float $previous_loss;
+
     protected ?array $trainingDataset;
+
     protected ?array $testingDataset = null;
+
     protected ?array $predictingDataset = null;
 
     protected array $best_prediction_result;
 
-    public abstract function train(): self;
-    public abstract function process(): self;
-    public abstract function predict(): self;
+    abstract public function train(): self;
 
-    protected function setEpochHistoryStamp(int $epoch, float $loss, float $cost, int $window_step, string $stop_condition): void {
+    abstract public function process(): self;
+
+    abstract public function predict(): self;
+
+    protected function setEpochHistoryStamp(int $epoch, float $loss, float $cost, int $window_step, string $stop_condition): void
+    {
         $this->history[] = [
             'epoch' => $epoch,
             'loss' => $loss,
@@ -174,14 +183,16 @@ abstract class Neuron
             'window_step' => $window_step,
             'stop_condition' => $stop_condition,
         ];
-        return;
+
     }
 
-    protected function generatePredictions(): array {
+    protected function generatePredictions(): array
+    {
         try {
             if (is_null($this->datasetCollection)) {
                 throw new InvalidArgumentException();
             }
+
             return array_column($this->neuralNetwork->touch($this->datasetCollection)->data, 0);
         } catch (InvalidArgumentException $e) {
             throw $e;

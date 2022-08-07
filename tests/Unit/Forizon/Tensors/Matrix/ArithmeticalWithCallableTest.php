@@ -11,6 +11,13 @@ class ArithmeticalWithCallableTest extends TestCase
 
     private string $target = Arithmetical::class;
 
-    public function testPowMatrixExpectsSuccess() { $this->runCallable(__FUNCTION__, 2); }
-    public function testSqrtMatrixExpectsSuccess() { $this->runCallable(__FUNCTION__); }
+    public function testPowMatrixExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__, 2);
+    }
+
+    public function testSqrtMatrixExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
 }

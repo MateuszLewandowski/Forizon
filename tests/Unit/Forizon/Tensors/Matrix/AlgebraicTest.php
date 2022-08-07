@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Forizon\Tensors\Matrix;
 
-use Tests\TestCase;
 use App\Forizon\Interfaces\Core\Tensor\Algebraic;
-use Tests\Traits\Matrix\CallableMethodAssertTrue;
 use App\Forizon\Tensors\Matrix;
+use Tests\TestCase;
+use Tests\Traits\Matrix\CallableMethodAssertTrue;
 
 class AlgebraicTest extends TestCase
 {
@@ -13,15 +13,40 @@ class AlgebraicTest extends TestCase
 
     private string $target = Algebraic::class;
 
-    public function testAbsExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testSqrtExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testExpExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testLogExpectsSuccess() { $this->runCallable(__FUNCTION__, 10); }
-    public function testRoundExpectsSuccess() { $this->runCallable(__FUNCTION__, 2); }
-    public function testFloorExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testNegateExpectsSuccess() {
+    public function testAbsExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testSqrtExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testExpExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testLogExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__, 10);
+    }
+
+    public function testRoundExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__, 2);
+    }
+
+    public function testFloorExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testNegateExpectsSuccess()
+    {
         $basic = Matrix::fillRandomize(3, 3, 1, 10);
-        if (!$basic instanceof Matrix) {
+        if (! $basic instanceof Matrix) {
             $this->assertTrue(false);
         }
         $mutated = $basic->negate();
@@ -33,5 +58,5 @@ class AlgebraicTest extends TestCase
             }
         }
         $this->assertTrue(true);
-     }
+    }
 }

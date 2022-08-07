@@ -2,12 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Auth\JSONWebToken as JWTService;
 use Closure;
 use Illuminate\Http\Request;
-use App\Services\Auth\JSONWebToken as JWTService;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
-
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class VerifyJWT
 {

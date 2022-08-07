@@ -3,9 +3,6 @@
 namespace App\Forizon\Abstracts\Core;
 
 use App\Forizon\Abstracts\Configuration;
-use Psy\Exception\TypeErrorException;
-use Illuminate\Support\Facades\Log;
-use InvalidArgumentException;
 use DateTime;
 
 /**
@@ -65,7 +62,7 @@ abstract class CollectionConfiguration extends Configuration
     /**
      * Default false.
      *
-     * @var boolean
+     * @var bool
      */
     public bool $skip_extremes = false;
 
@@ -102,7 +99,9 @@ abstract class CollectionConfiguration extends Configuration
      * Date time from - default = first sample
      * Date time to - default = last sample
      */
-    public ?DateTime $dateTimeFrom = null, $dateTimeTo = null;
+    public ?DateTime $dateTimeFrom = null;
+
+    public ?DateTime $dateTimeTo = null;
 
     /**
      * If specified, get only samples in the defined batches quantity.
@@ -111,7 +110,8 @@ abstract class CollectionConfiguration extends Configuration
      * + no action in classification.
      *
      * @todo Verify comment.
-     * @var integer
+     *
+     * @var int
      */
     public ?int $batches = null;
 }

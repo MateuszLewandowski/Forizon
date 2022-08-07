@@ -2,20 +2,25 @@
 
 namespace Tests\Unit\Forizon\Core\Functions\Loss;
 
-use App\Forizon\System\Services\ClassSearcher;
 use App\Forizon\Interfaces\NotImplemented;
+use App\Forizon\System\Services\ClassSearcher;
 use App\Forizon\Tensors\Matrix;
 use Tests\TestCase;
 
 class WorkTest extends TestCase
 {
     private string $namespace = 'Core\Functions\Loss';
+
     private int $rows = 4;
+
     private int $columns = 4;
+
     private float $loss_range = 12.0;
 
-    private function getDefaultsInputAndOutputMatrixes(): array {
+    private function getDefaultsInputAndOutputMatrixes(): array
+    {
         $matrix = Matrix::fillRandomize($this->rows, $this->columns);
+
         return [clone $matrix, clone $matrix];
     }
 
@@ -35,7 +40,7 @@ class WorkTest extends TestCase
                 $flag = false;
                 break;
             }
-            if (!$differentive instanceof Matrix or $differentive->rows !== $this->rows or $differentive->columns !== $this->columns) {
+            if (! $differentive instanceof Matrix or $differentive->rows !== $this->rows or $differentive->columns !== $this->columns) {
                 $flag = false;
                 break;
             }

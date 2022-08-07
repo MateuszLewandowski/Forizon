@@ -2,25 +2,27 @@
 
 namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Models\Regression;
 
+use App\Abstracts\Data\DatasetCollection;
+use App\Forizon\Abstracts\ComputationalIntelligence\Neuron;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Output\Continous;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\NeuralNetwork;
-use App\Forizon\System\Reports\Regression as RegressionReport;
-use App\Forizon\Abstracts\ComputationalIntelligence\Neuron;
 use App\Forizon\Core\Configurations\NeuronConfiguration;
-use App\Forizon\Interfaces\Core\NeuralNetwork\Model;
-use App\Forizon\Data\Converters\Normalizer;
-use App\Abstracts\Data\DatasetCollection;
-use App\Forizon\Data\Converters\Splitter;
 use App\Forizon\Data\Collections\Labeled;
+use App\Forizon\Data\Converters\Normalizer;
+use App\Forizon\Data\Converters\Splitter;
+use App\Forizon\Interfaces\Core\NeuralNetwork\Model;
+use App\Forizon\System\Reports\Regression as RegressionReport;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-
 
 final class Perceptron extends Neuron implements Model
 {
     private DatasetCollection $datasetCollection;
+
     private bool $is_multiperceptron = false;
+
     private Normalizer $normalizer;
+
     private array $predictions;
 
     public function __construct(
@@ -33,7 +35,7 @@ final class Perceptron extends Neuron implements Model
                     $this->{$key} = $value;
                 }
             }
-            if (!empty($this->hiddens)) {
+            if (! empty($this->hiddens)) {
                 $this->is_multiperceptron = true;
             }
             $this->normalizer = new Normalizer($collection);
@@ -49,7 +51,8 @@ final class Perceptron extends Neuron implements Model
         }
     }
 
-    public function train(): self {
+    public function train(): self
+    {
         try {
             if (is_null($this->datasetCollection)) {
                 throw new InvalidArgumentException();
@@ -61,14 +64,15 @@ final class Perceptron extends Neuron implements Model
                 optimizer: $this->optimizer
             );
             $this->neuralNetwork->initialize();
+
             return $this;
         } catch (InvalidArgumentException $e) {
             throw $e;
         }
-
     }
 
-    public function process(): self {
+    public function process(): self
+    {
         try {
             if (is_null($this->datasetCollection)) {
                 throw new InvalidArgumentException();
@@ -107,19 +111,24 @@ final class Perceptron extends Neuron implements Model
                 }
                 $this->setEpochHistoryStamp(epoch: $epoch, loss: $loss, cost: $cost, window_step: $window_step, stop_condition: '-');
             }
+
             return $this;
         } catch (InvalidArgumentException $e) {
             throw $e;
         }
     }
 
-    public function report(): array {
+    public function report(): array
+    {
         $regressionReport = new RegressionReport(neuralNetwork: $this->neuralNetwork, neuronConfiguration: $this->neuronConfiguration, model: $this);
+
         return $regressionReport->generate();
     }
 
-    public function predict(): self {
+    public function predict(): self
+    {
         $this->predictions = $this->generatePredictions();
+
         return $this;
     }
 }

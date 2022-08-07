@@ -20,7 +20,8 @@ class Normalizer
      */
     private Collection $collection;
 
-    public function __construct(Collection $collection) {
+    public function __construct(Collection $collection)
+    {
         $this->collection = $collection;
         $this->analyzer = new Analyzer($this->collection);
     }
@@ -29,28 +30,33 @@ class Normalizer
      * Min-max normalization (features scaling) [0, 1]
      *
      * @see https://stackoverflow.com/questions/39355942/denormalize-data
+     *
      * @return Collection
      */
-    public function minMaxFeatureScaling(bool $return_as_array = false): Collection {
+    public function minMaxFeatureScaling(bool $return_as_array = false): Collection
+    {
         [$min, $max] = $this->analyzer->extremes(keyless: true);
         $collection = $this->collection;
         $collection = $collection->map(function ($value) use ($min, $max) {
             return ($value - $min) / ($max - $min);
         });
+
         return $return_as_array === true
             ? $collection->all()
             : $collection;
     }
 
     /**
-     * @param Collection $normalizedCollection
+     * @param  Collection  $normalizedCollection
      * @return Collection
      */
-    public function minMaxFeatureDescaling(Collection $normalizedCollection, bool $return_as_array = false): Collection {
+    public function minMaxFeatureDescaling(Collection $normalizedCollection, bool $return_as_array = false): Collection
+    {
         [$min, $max] = $this->analyzer->extremes(keyless: true);
-        $normalizedCollection = $normalizedCollection->map(function($value) use ($min, $max) {
+        $normalizedCollection = $normalizedCollection->map(function ($value) use ($min, $max) {
             return $value * ($max - $min) + $min;
         });
+
         return $return_as_array === true
             ? $normalizedCollection->all()
             : $normalizedCollection;

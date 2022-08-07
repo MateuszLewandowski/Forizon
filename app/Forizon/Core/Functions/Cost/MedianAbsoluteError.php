@@ -9,7 +9,8 @@ use App\Forizon\Interfaces\Core\Functions\Cost as CostFunction;
  */
 class MedianAbsoluteError implements CostFunction
 {
-    public function evaluate(array $predictions, array $labels): float {
+    public function evaluate(array $predictions, array $labels): float
+    {
         if (count($predictions) !== count($labels)) {
             //
         }
@@ -23,6 +24,7 @@ class MedianAbsoluteError implements CostFunction
         $length = count($errors);
         $middle = intdiv($length, 2);
         sort($errors);
+
         return -($length % 2 === 1
             ? $errors[$middle]
             : ($errors[$middle - 1] + $errors[$middle]) / 2);

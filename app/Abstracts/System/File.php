@@ -2,43 +2,44 @@
 
 namespace App\Abstracts\System;
 
+use App\Models\System\File as FileModel;
 use Dotenv\Exception\InvalidFileException;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\Exception\CannotWriteFileException;
 use Symfony\Component\HttpFoundation\File\Exception\ExtensionFileException;
 use Symfony\Component\HttpFoundation\File\Exception\NoFileException;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Carbon;
-use App\Models\System\File as FileModel;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 
 abstract class File
 {
     /**
-     * @var string $timestmap_format = 'TmdHis';
+     * @var string = 'TmdHis';
      */
     protected string $timestmap_format = 'YmdHis';
 
     /**
-     * @var ?string $file_name_prefix = null;
+     * @var ?string = null;
      */
     protected ?string $file_name_prefix = null;
 
     /**
-     * @var ?string $file_name_sufix = null;
+     * @var ?string = null;
      */
     protected ?string $file_name_sufix = null;
 
     /**
-     * @var ?string $direcotry = null;
+     * @var ?string = null;
      */
     protected ?string $directory = null;
 
-    public abstract function store(string|array $files, string|array $name, string $extension = 'txt', string $directory = ''): array;
+    abstract public function store(string|array $files, string|array $name, string $extension = 'txt', string $directory = ''): array;
 
-    public function load(array|string $files, bool $strict = true) {
+    public function load(array|string $files, bool $strict = true)
+    {
         try {
             $targets = gettype($files) === 'string' ? [$files] : $files;
             if (empty($targets)) {
@@ -50,13 +51,13 @@ abstract class File
                 if (gettype($target) !== 'string') {
                     return [Response::HTTP_BAD_REQUEST, ''];
                 }
-                if (!isset($target['id']) or !isset($target['name'])) {
+                if (! isset($target['id']) or ! isset($target['name'])) {
                     return [Response::HTTP_BAD_REQUEST, ''];
                 }
                 $query->where('id', $target['id']);
                 $names[] = $target['name'];
             }
-            if (!$query->exists() and $strict) {
+            if (! $query->exists() and $strict) {
                 return [Response::HTTP_NOT_FOUND, __('app.404', ['attribute' => 'files '])];
             }
             $loaded = [];
@@ -64,10 +65,11 @@ abstract class File
                 $data = Storage::exists($name) ? Storage::get($name) : null;
                 $loaded[] = [
                     'name' => $name,
-                    'data' => $data
+                    'data' => $data,
                 ];
             }
-            return !empty($loaded)
+
+            return ! empty($loaded)
                 ? [Response::HTTP_OK, $loaded]
                 : [Response::HTTP_NOT_FOUND, ''];
         } catch (InvalidFileException $e) {
@@ -79,7 +81,8 @@ abstract class File
         }
     }
 
-    protected function save(array|string $files, string $context = 'research') {
+    protected function save(array|string $files, string $context = 'research')
+    {
         try {
             $targets = gettype($files) === 'string' ? [$files] : $files;
             if (empty($targets)) {
@@ -90,7 +93,7 @@ abstract class File
                 if (gettype($target) !== 'string') {
                     return [Response::HTTP_BAD_REQUEST, ''];
                 }
-                if (!isset($target['data'])) {
+                if (! isset($target['data'])) {
                     return [Response::HTTP_BAD_REQUEST, ''];
                 }
                 $data = (is_array($target['data']) or is_object($target['data'])) ? json_encode($target['data']) : $target['data'];
@@ -104,16 +107,17 @@ abstract class File
                 DB::transaction(function () use ($name, $data, $context) {
                     $created = FileModel::create([
                         'context' => $context,
-                        'name' => $name
+                        'name' => $name,
                     ]);
                     $stored = Storage::put($name, $data);
-                    if (!$created or !$stored) {
+                    if (! $created or ! $stored) {
                         throw new CannotWriteFileException(
                             '', Response::HTTP_INTERNAL_SERVER_ERROR
                         );
                     }
                 });
             }
+
             return [Response::HTTP_CREATED, $names];
         } catch (InvalidFileException $e) {
             return [$e->getCode(), $e->getMessage()];
@@ -126,7 +130,8 @@ abstract class File
         }
     }
 
-    public function destroy(array|string $files): array {
+    public function destroy(array|string $files): array
+    {
         try {
             $targets = gettype($files) === 'string' ? [$files] : $files;
             if (empty($targets)) {
@@ -137,6 +142,7 @@ abstract class File
                     return [Response::HTTP_BAD_REQUEST, ''];
                 }
             }
+
             return Storage::delete($files)
                 ? [Response::HTTP_OK, '']
                 : [Response::HTTP_BAD_REQUEST, ''];
@@ -150,28 +156,32 @@ abstract class File
     }
 
     /**
-     * @param array $names = []
-     * @param bool $string = true
+     * @param  array  $names = []
+     * @param  bool  $string = true
      * @return array
+     *
      * @throws NoFileException
      * @throws Exception
      */
-    public function get(string|array $names = [], bool $strict = true): array {
+    public function get(string|array $names = [], bool $strict = true): array
+    {
         try {
             $get = gettype($names) === 'string' ? [$names] : $names;
             $result = [];
             foreach ($get as $name) {
-                if (!Storage::exists($name)) {
+                if (! Storage::exists($name)) {
                     if ($strict === true) {
                         return [Response::HTTP_NOT_FOUND, ''];
                     }
+
                     continue;
                 }
                 $result[] = json_decode(Storage::get($name), true);
             }
-            return !empty($result)
+
+            return ! empty($result)
                 ? [Response::HTTP_OK, $result]
-                : [Response::HTTP_NOT_FOUND, __('app.404', ['attribute' => 'file ' . $name])];
+                : [Response::HTTP_NOT_FOUND, __('app.404', ['attribute' => 'file '.$name])];
         } catch (NoFileException $e) {
             return [$e->getCode(), $e->getMessage()];
         } catch (Exception $e) {

@@ -2,25 +2,26 @@
 
 namespace Tests\Traits\Matrix;
 
-use BadMethodCallException;
 use App\Forizon\Interfaces\Core\Tensor;
 use App\Forizon\Tensors\Matrix;
+use BadMethodCallException;
 
 trait ComparableMethodAssertTrue
 {
     private $unset = [
-        'test', 'Expects', 'Success', 'Failure'
+        'test', 'Expects', 'Success', 'Failure',
     ];
 
     /**
      * Undocumented function
      *
-     * @param string $function
-     * @param float|null $expected
-     * @param float|null $parameter
+     * @param  string  $function
+     * @param  float|null  $expected
+     * @param  float|null  $parameter
      * @return void
      */
-    private function runComparable(string $function, Matrix $first, Tensor|float $second, float $expected, ?float $parameter = null): void {
+    private function runComparable(string $function, Matrix $first, Tensor|float $second, float $expected, ?float $parameter = null): void
+    {
         $parts = preg_split('/(?=[A-Z])/', $function);
         foreach ($parts as $key => $part) {
             if (in_array($part, $this->unset)) {
@@ -28,7 +29,7 @@ trait ComparableMethodAssertTrue
             }
         }
         $method = lcfirst(implode('', array_merge($parts, [$this->accessor])));
-        if (!method_exists($first, $method)) {
+        if (! method_exists($first, $method)) {
             throw new BadMethodCallException();
         }
         $result = $parameter !== null
@@ -40,7 +41,7 @@ trait ComparableMethodAssertTrue
                     $this->assertTrue(false);
                 }
             }
-       }
-       $this->assertTrue(true);
+        }
+        $this->assertTrue(true);
     }
 }

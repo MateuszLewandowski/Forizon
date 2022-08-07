@@ -2,44 +2,51 @@
 
 namespace App\Abstracts\Data;
 
-use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\ItemNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class DatasetCollection
 {
     /**
-     * @var float[] $samples
+     * @var float[]
      */
     public array $samples = [];
 
     /**
-     * @var float[] $labels
+     * @var float[]
      */
     public array $labels = [];
 
     /**
-     * @var float[] $features
+     * @var float[]
      */
     public array $features = [];
 
-    public abstract function split(float $ratio = 0.2): array;
-    public abstract function stack(iterable $dataset): self;
-    public abstract function stratify(): array;
-    public abstract function batch(int $quantity = 32): array;
-    public abstract function randomize(): self;
+    abstract public function split(float $ratio = 0.2): array;
 
-    public function size(): int {
+    abstract public function stack(iterable $dataset): self;
+
+    abstract public function stratify(): array;
+
+    abstract public function batch(int $quantity = 32): array;
+
+    abstract public function randomize(): self;
+
+    public function size(): int
+    {
         return count($this->samples) * count($this->features);
     }
 
-    public function shape(): array {
+    public function shape(): array
+    {
         return [
-            count($this->samples), count($this->features)
+            count($this->samples), count($this->features),
         ];
     }
 
-    public function sample(int $row, int $column): float {
+    public function sample(int $row, int $column): float
+    {
         try {
             if ($row < 1 or $column < 1) {
                 throw new ItemNotFoundException('row and column number must be a positive.', Response::HTTP_BAD_REQUEST);
@@ -48,13 +55,14 @@ abstract class DatasetCollection
                 return $this->samples[$row][$column];
             }
             throw new ItemNotFoundException('There is no sample with index like that.', Response::HTTP_BAD_REQUEST);
-        } catch(ItemNotFoundException $e) {
+        } catch (ItemNotFoundException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
             throw $e;
         }
     }
 
-    public function feature(int $i): array {
+    public function feature(int $i): array
+    {
         try {
             if ($i < 1) {
                 throw new ItemNotFoundException('index number must be a positive number.', Response::HTTP_BAD_REQUEST);
@@ -63,17 +71,19 @@ abstract class DatasetCollection
                 return array_column($this->samples, $i);
             }
             throw new ItemNotFoundException('There is no sample with index like that.', Response::HTTP_BAD_REQUEST);
-        } catch(ItemNotFoundException $e) {
+        } catch (ItemNotFoundException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
             throw $e;
         }
     }
 
-    public function classes(): array {
+    public function classes(): array
+    {
         return array_values(array_unique($this->labels, SORT_REGULAR));
     }
 
-    public function transpose(array $data = []) {
+    public function transpose(array $data = [])
+    {
         if (empty($data)) {
             return $data;
         }
@@ -82,6 +92,7 @@ abstract class DatasetCollection
                 $result[$j][$i] = $data[$i][$j];
             }
         }
+
         return $result;
     }
 }

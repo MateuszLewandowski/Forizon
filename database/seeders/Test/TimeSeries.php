@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Test;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Test\TimeSeries as TimeSeriesModel;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TimeSeries extends Seeder

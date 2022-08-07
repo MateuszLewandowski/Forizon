@@ -4,7 +4,6 @@ namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\La
 
 use App\Forizon\Data\Initializers\XavierOne;
 use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Hidden;
-use App\Forizon\Interfaces\Core\Functions\Activation as ActivationFunction;
 use App\Forizon\Interfaces\Core\Optimizer;
 use App\Forizon\Interfaces\Data\Initializer;
 use App\Forizon\Parameters\Attribute;
@@ -14,6 +13,7 @@ use InvalidArgumentException;
 class Dense implements Hidden
 {
     private Attribute $weights;
+
     private Attribute $biases;
 
     public function __construct(
@@ -22,7 +22,7 @@ class Dense implements Hidden
         private bool $is_biased = true,
         private Initializer $weightInitializer = new XavierOne,
         private Initializer $biasInitializer = new XavierOne,
-    ){
+    ) {
         try {
             if ($neurons < 1) {
                 throw new InvalidArgumentException();
@@ -36,9 +36,10 @@ class Dense implements Hidden
     }
 
     /**
-     * @return integer
+     * @return int
      */
-    public function getNeurons(): int {
+    public function getNeurons(): int
+    {
         return $this->neurons;
     }
 
@@ -47,10 +48,12 @@ class Dense implements Hidden
      * Output layer in regression contains only one neuron.
      *
      * @todo Exception message and status code.
-     * @param integer $neurons
-     * @return integer
+     *
+     * @param  int  $neurons
+     * @return int
      */
-    public function initialize(int $neurons): int {
+    public function initialize(int $neurons): int
+    {
         try {
             if ($neurons < 1) {
                 throw new InvalidArgumentException();
@@ -59,6 +62,7 @@ class Dense implements Hidden
             if ($this->is_biased) {
                 $this->biases = new Attribute($this->weightInitializer->init($this->neurons, 1)->asColumnVector());
             }
+
             return $this->neurons;
         } catch (InvalidArgumentException $e) {
             //
@@ -68,12 +72,14 @@ class Dense implements Hidden
     /**
      * Feeding forward represents the transfer of neurons deep into the model.
      *
-     * @param Matrix $matrix
+     * @param  Matrix  $matrix
      * @return Matrix
      */
-    public function feedForward(Matrix $matrix): Matrix {
+    public function feedForward(Matrix $matrix): Matrix
+    {
         $this->input = $matrix;
         $output = $this->weights->value->matmul($matrix);
+
         return $this->is_biased
             ? $output->add($this->biases->value)
             : $output;
@@ -82,22 +88,25 @@ class Dense implements Hidden
     /**
      * Touching the input layer constitutes sending data deep into the model.
      *
-     * @param Matrix $matrix
+     * @param  Matrix  $matrix
      * @return Matrix
      */
-    public function touch(Matrix $matrix): Matrix {
+    public function touch(Matrix $matrix): Matrix
+    {
         $output = $this->weights->value->matmul($matrix);
+
         return $this->is_biased
             ? $output->add($this->biases->value)
             : $output;
     }
 
     /**
-     * @param Matrix $gradient
-     * @param Optimizer $optimizer
+     * @param  Matrix  $gradient
+     * @param  Optimizer  $optimizer
      * @return Matrix
      */
-    public function backPropagation(Matrix $gradient, Optimizer $optimizer): Matrix {
+    public function backPropagation(Matrix $gradient, Optimizer $optimizer): Matrix
+    {
         $weightsDerivative = $gradient->matmul($this->input->transpose());
         $weights = $this->weights->value;
         if ($this->alpha) {
@@ -107,15 +116,17 @@ class Dense implements Hidden
         if ($this->is_biased) {
             $this->biases->update($this->biases->value->subtract($optimizer->run($this->weights->uuid, $gradient->sum())));
         }
+
         return $this->determineGradient($weights, $gradient);
     }
 
     /**
-     * @param Matrix $weights
-     * @param Matrix $gradient
+     * @param  Matrix  $weights
+     * @param  Matrix  $gradient
      * @return Matrix
      */
-    public function determineGradient(Matrix $weights, Matrix $gradient): Matrix {
+    public function determineGradient(Matrix $weights, Matrix $gradient): Matrix
+    {
         return $weights->transpose()->matmul($gradient);
     }
 }

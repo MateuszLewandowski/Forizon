@@ -2,24 +2,30 @@
 
 namespace Tests\Unit\Forizon\Core\Functions\Activation;
 
-use App\Forizon\System\Services\ClassSearcher;
 use App\Forizon\Interfaces\NotImplemented;
+use App\Forizon\System\Services\ClassSearcher;
 use App\Forizon\Tensors\Matrix;
 use Tests\TestCase;
 
 class WorkTest extends TestCase
 {
     private string $namespace = 'Core\Functions\Activation';
+
     private int $rows = 4;
+
     private int $columns = 4;
+
     private float $activation_range = 2.0;
 
-    private function getDefaultsInputAndOutputMatrixes(): array {
+    private function getDefaultsInputAndOutputMatrixes(): array
+    {
         $matrix = Matrix::fillRandomize($this->rows, $this->columns);
+
         return [clone $matrix, clone $matrix];
     }
 
-    public function testWorkExpectsSuccess() {
+    public function testWorkExpectsSuccess()
+    {
         $namespaceClassProviderService = new ClassSearcher($this->namespace);
         $objects = $namespaceClassProviderService->getObjects();
         [$input, $output] = $this->getDefaultsInputAndOutputMatrixes();
@@ -30,11 +36,11 @@ class WorkTest extends TestCase
             }
             $used = $object->use($input);
             $derivatived = $object->derivative($input, $output);
-            if (!$used instanceof Matrix or $used->rows !== $this->rows or $used->columns !== $this->columns) {
+            if (! $used instanceof Matrix or $used->rows !== $this->rows or $used->columns !== $this->columns) {
                 $flag = false;
                 break;
             }
-            if (!$derivatived instanceof Matrix or $derivatived->rows !== $this->rows or $derivatived->columns !== $this->columns) {
+            if (! $derivatived instanceof Matrix or $derivatived->rows !== $this->rows or $derivatived->columns !== $this->columns) {
                 $flag = false;
                 break;
             }
@@ -52,7 +58,6 @@ class WorkTest extends TestCase
                     }
                 }
             }
-
         }
         $this->assertTrue($flag);
     }

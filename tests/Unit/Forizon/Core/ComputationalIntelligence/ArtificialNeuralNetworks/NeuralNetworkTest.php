@@ -3,18 +3,16 @@
 namespace Tests\Unit\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks;
 
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Activation;
-use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Output\Continous;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Dense;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Dropout;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Noise;
-use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\NeuralNetwork;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Input;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Output\BinaryClassifier;
+use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Output\Continous;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Output\Multiclassifier;
+use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\NeuralNetwork;
 use App\Forizon\Core\Functions\Activation\RectifiedLinearUnit;
 use App\Forizon\Core\Functions\Loss\LeastSquares;
-use App\Forizon\System\Services\ClassSearcher;
-use App\Forizon\Interfaces\NotImplemented;
 use App\Forizon\Core\Optimizers\Adam;
 use App\Forizon\Tensors\Matrix;
 use Tests\TestCase;
@@ -22,6 +20,7 @@ use Tests\TestCase;
 class NeuralNetworkTest extends TestCase
 {
     private int $rows = 3;
+
     private int $columns = 3;
 
     /**
@@ -45,7 +44,8 @@ class NeuralNetworkTest extends TestCase
             : $this->assertTrue(false);
     }
 
-    public function testWorkHiddenLayerExpectsSuccess() {
+    public function testWorkHiddenLayerExpectsSuccess()
+    {
         new NeuralNetwork(
             input: new Input(16),
             hiddens: [
@@ -92,7 +92,8 @@ class NeuralNetworkTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testWorkOutputLayerExpectsSuccess() {
+    public function testWorkOutputLayerExpectsSuccess()
+    {
         new NeuralNetwork(
             input: new Input(16),
             hiddens: [

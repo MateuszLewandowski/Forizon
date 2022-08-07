@@ -3,13 +3,14 @@
 namespace App\Forizon\Data\Collections;
 
 use App\Abstracts\Data\DatasetCollection;
-use InvalidArgumentException;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 
 class Labeled extends DatasetCollection
 {
-    public function __construct(array $samples = [], array $labels = []) {
+    public function __construct(array $samples = [], array $labels = [])
+    {
         try {
             if (empty($samples) or empty($labels)) {
                 throw new InvalidArgumentException('Samples nor labels can not be empty.', Response::HTTP_BAD_REQUEST);
@@ -33,10 +34,11 @@ class Labeled extends DatasetCollection
     /**
      * Veryfi if that splitting is correct (testing - training switch positions?)
      *
-     * @param float $ratio
+     * @param  float  $ratio
      * @return array<Labeled,Labeled>
      */
-    public function split(float $ratio = 0.2): array {
+    public function split(float $ratio = 0.2): array
+    {
         $i = (int) floor($ratio * count($this->samples)) + 1;
         $training = new self(
             array_slice($this->samples, 0, $i),
@@ -46,14 +48,16 @@ class Labeled extends DatasetCollection
             array_slice($this->samples, $i),
             array_slice($this->labels, $i)
         );
+
         return [$training, $testing];
     }
 
-    public function stack(iterable $datasets): self {
+    public function stack(iterable $datasets): self
+    {
         try {
             $labels = $samples = [];
             foreach ($datasets as $i => $dataset) {
-                if (!$dataset instanceof Labeled) {
+                if (! $dataset instanceof Labeled) {
                     throw new InvalidArgumentException('Dataset must be labeled', Response::HTTP_BAD_REQUEST);
                 }
                 if (empty($dataset->samples)) {
@@ -62,6 +66,7 @@ class Labeled extends DatasetCollection
                 $labels[] = $dataset->labels;
                 $samples[] = $dataset->samples;
             }
+
             return new self(array_merge(...$samples), array_merge(...$labels));
         } catch (InvalidArgumentException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
@@ -69,7 +74,8 @@ class Labeled extends DatasetCollection
         }
     }
 
-    public function stratify(): array {
+    public function stratify(): array
+    {
         $data = [];
         foreach ($this->labels as $i => $label) {
             $data[$label][] = $this->samples[$i];
@@ -78,35 +84,40 @@ class Labeled extends DatasetCollection
             $labels = array_fill(0, count($stratum), $label);
             $stratum = new self($stratum, $labels);
         }
+
         return $data;
     }
 
-    public function batch(int $quantity = 32): array {
+    public function batch(int $quantity = 32): array
+    {
         try {
             if ($quantity < 2) {
                 throw new InvalidArgumentException('Batches quantity must be greater than 1', Response::HTTP_BAD_REQUEST);
             }
+
             return [
                 new self(...array_chunk($this->samples, $quantity)),
-                new self(...array_chunk($this->labels, $quantity))
+                new self(...array_chunk($this->labels, $quantity)),
             ];
-
         } catch (InvalidArgumentException $e) {
             Log::critical($e->getMessage(), [__CLASS__]);
             throw $e;
         }
     }
 
-    public function randomize(): self {
+    public function randomize(): self
+    {
         $order = range(0, $this->samples_quantity - 1);
         shuffle($order);
         array_multisort(
             $order, $this->samples, $this->labels
         );
+
         return $this;
     }
 
-    public function create(array $samples = [], array $labels = []): self {
+    public function create(array $samples = [], array $labels = []): self
+    {
         return new self($samples, $labels);
     }
 }

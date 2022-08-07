@@ -4,13 +4,13 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class VerifyAPIKey
 {
     /**
-     * @var array $excluded
+     * @var array
      */
     private array $excluded = [
         '/api/documentation',
@@ -25,8 +25,8 @@ class VerifyAPIKey
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
-    {   
-        if ($request->header('api_key', false) !== config('api.key') and !in_array($request->getRequestUri(), $this->excluded)) {
+    {
+        if ($request->header('api_key', false) !== config('api.key') and ! in_array($request->getRequestUri(), $this->excluded)) {
             throw new HttpException(Response::HTTP_FORBIDDEN, '');
         }
 

@@ -11,7 +11,8 @@ class Noise implements Hidden
 {
     private int $neurons;
 
-    public function __construct(private float $standard_deviation = 1.0) {
+    public function __construct(private float $standard_deviation = 1.0)
+    {
         try {
             if ($standard_deviation < 0.0) {
                 throw new InvalidArgumentException();
@@ -22,9 +23,10 @@ class Noise implements Hidden
     }
 
     /**
-     * @return integer
+     * @return int
      */
-    public function getNeurons(): int {
+    public function getNeurons(): int
+    {
         return $this->neurons;
     }
 
@@ -33,15 +35,18 @@ class Noise implements Hidden
      * Output layer in regression contains only one neuron.
      *
      * @todo Exception message and status code.
-     * @param integer $neurons
-     * @return integer
+     *
+     * @param  int  $neurons
+     * @return int
      */
-    public function initialize(int $neurons): int {
+    public function initialize(int $neurons): int
+    {
         try {
             if ($neurons < 1) {
                 throw new InvalidArgumentException();
             }
             $this->neurons = $neurons;
+
             return $this->neurons;
         } catch (InvalidArgumentException $e) {
             //
@@ -51,38 +56,42 @@ class Noise implements Hidden
     /**
      * Feeding forward represents the transfer of neurons deep into the model.
      *
-     * @param Matrix $matrix
+     * @param  Matrix  $matrix
      * @return Matrix
      */
-    public function feedForward(Matrix $matrix): Matrix {
+    public function feedForward(Matrix $matrix): Matrix
+    {
         return $matrix->add($this->generateNoise($matrix->rows, $matrix->columns));
     }
 
     /**
      * Touching the input layer constitutes sending data deep into the model.
      *
-     * @param Matrix $matrix
+     * @param  Matrix  $matrix
      * @return Matrix
      */
-    public function touch(Matrix $matrix): Matrix {
+    public function touch(Matrix $matrix): Matrix
+    {
         return $matrix;
     }
 
     /**
-     * @param Matrix $gradient
-     * @param Optimizer $optimizer
+     * @param  Matrix  $gradient
+     * @param  Optimizer  $optimizer
      * @return Matrix
      */
-    public function backPropagation(Matrix $gradient, Optimizer $optimizer): Matrix {
+    public function backPropagation(Matrix $gradient, Optimizer $optimizer): Matrix
+    {
         return $gradient;
     }
 
     /**
-     * @param integer $rows
-     * @param integer $columns
+     * @param  int  $rows
+     * @param  int  $columns
      * @return Matrix
      */
-    private function generateNoise(int $rows, int $columns): Matrix {
+    private function generateNoise(int $rows, int $columns): Matrix
+    {
         return Matrix::fillGaussian($rows, $columns)->multiply($this->standard_deviation);
     }
 }

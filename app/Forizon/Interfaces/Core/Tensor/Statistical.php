@@ -2,8 +2,8 @@
 
 namespace App\Forizon\Interfaces\Core\Tensor;
 
-interface Statistical {
-
+interface Statistical
+{
     public function mean(): mixed;
 
     /**
@@ -16,5 +16,4 @@ interface Statistical {
      * @see https://zpe.gov.pl/a/przeczytaj/DQzJKaV85
      */
     public function quantile(float $q): mixed;
-
 }

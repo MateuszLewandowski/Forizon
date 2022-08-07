@@ -4,13 +4,15 @@ namespace App\Forizon\Abstracts;
 
 abstract class Report
 {
-    public abstract function generate(): array;
+    abstract public function generate(): array;
 
-    protected function saveAsFile(): bool {
+    protected function saveAsFile(): bool
+    {
         return false;
     }
 
-    protected function getPropertiesListing(Object $object): array {
+    protected function getPropertiesListing(object $object): array
+    {
         $properties = get_object_vars($object);
         if ($properties) {
             foreach ($properties as &$property) {
@@ -19,6 +21,7 @@ abstract class Report
                 }
             }
         }
+
         return $properties;
     }
 }

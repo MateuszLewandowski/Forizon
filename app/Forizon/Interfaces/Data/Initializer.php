@@ -4,6 +4,7 @@ namespace App\Forizon\Interfaces\Data;
 
 use App\Forizon\Tensors\Matrix;
 
-interface Initializer {
+interface Initializer
+{
     public function init(int $rows, int $columns): Matrix;
 }

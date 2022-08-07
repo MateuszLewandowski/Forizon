@@ -6,7 +6,8 @@ use App\Forizon\Interfaces\Core\Distance;
 
 class Hamming implements Distance
 {
-    public function calc(array $a = [], array $b = []): float {
+    public function calc(array $a = [], array $b = []): float
+    {
         if (count($a) !== count($b)) {
             //
         }
@@ -16,6 +17,7 @@ class Hamming implements Distance
                 $distance++;
             }
         }
+
         return (float) $distance;
     }
 }

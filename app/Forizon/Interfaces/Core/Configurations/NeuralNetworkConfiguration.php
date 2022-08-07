@@ -2,4 +2,6 @@
 
 namespace App\Forizon\Interfaces\Core\Configurations;
 
-interface NeuralNetworkConfiguration {}
+interface NeuralNetworkConfiguration
+{
+}

@@ -11,7 +11,8 @@ class NormalizerTest extends TestCase
 {
     private const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
-    private function createDefaultCollection(): Collection {
+    private function createDefaultCollection(): Collection
+    {
         return collect([
             Carbon::create(2022, 1, 1)->format(self::DEFAULT_DATE_FORMAT) => 1000.00,
             Carbon::create(2022, 1, 2)->format(self::DEFAULT_DATE_FORMAT) => 2000.00,
@@ -52,7 +53,7 @@ class NormalizerTest extends TestCase
         $denormalizedCollection = $normalizer->minMaxFeatureDescaling($normalizedCollection);
         $flag = true;
         foreach ($denormalizedCollection as $key => $value) {
-            if (!$val = $collection->get($key)) {
+            if (! $val = $collection->get($key)) {
                 $flag = false;
                 break;
             }

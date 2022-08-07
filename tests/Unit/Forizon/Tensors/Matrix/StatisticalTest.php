@@ -3,8 +3,8 @@
 namespace Tests\Unit\Forizon\Tensors\Matrix;
 
 use App\Forizon\Tensors\ColumnVector;
-use PHPUnit\Framework\TestCase;
 use App\Forizon\Tensors\Matrix;
+use PHPUnit\Framework\TestCase;
 
 class StatisticalTest extends TestCase
 {
@@ -46,14 +46,14 @@ class StatisticalTest extends TestCase
         $basic = Matrix::fillRandomize(32, 32, 1, 10);
         $mutated = $basic->quantile($q);
         $x = $q * ($basic->columns - 1) + 1;
-            $y = (int) $x;
-            $remainder = $x - $y;
-            $data = [];
-            foreach ($basic->data as $row) {
-                sort($row);
-                $z = $row[$y - 1];
-                $data[] = $z + $remainder * ($row[$y] - $z);
-            }
+        $y = (int) $x;
+        $remainder = $x - $y;
+        $data = [];
+        foreach ($basic->data as $row) {
+            sort($row);
+            $z = $row[$y - 1];
+            $data[] = $z + $remainder * ($row[$y] - $z);
+        }
         $basic = ColumnVector::fastCreate($data);
         $flag = true;
         for ($i = 0; $i < $basic->rows; $i++) {

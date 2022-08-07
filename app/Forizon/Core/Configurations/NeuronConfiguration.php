@@ -2,39 +2,39 @@
 
 namespace App\Forizon\Core\Configurations;
 
+use App\Forizon\Abstracts\Configuration;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Activation;
 use App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Layers\Hidden\Dense;
 use App\Forizon\Interfaces\Core\Configurations\NeuralNetworkConfiguration;
-use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Placeholder;
+use App\Forizon\Interfaces\Core\Functions\Cost as CostFunction;
+use App\Forizon\Interfaces\Core\Functions\Loss as LossFunction;
 use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Output;
-use App\Forizon\Validators\Configuration as Validator;
+use App\Forizon\Interfaces\Core\NeuralNetwork\Layers\Placeholder;
 use App\Forizon\Interfaces\Core\Optimizer;
-use App\Forizon\Abstracts\Configuration;
-use Psy\Exception\TypeErrorException;
+use App\Forizon\Validators\Configuration as Validator;
 use Illuminate\Support\Facades\Log;
-use InvalidArgumentException;
 use Illuminate\Support\Str;
-use App\Forizon\Interfaces\Core\Functions\{
-    Loss as LossFunction,
-    Cost as CostFunction,
-};
+use InvalidArgumentException;
+use Psy\Exception\TypeErrorException;
 
 class NeuronConfiguration extends Configuration implements NeuralNetworkConfiguration
 {
     private const REQUIRED = [
-        'model', 'optimizer', 'lossFunction', 'costFunction', 'input', 'output'
+        'model', 'optimizer', 'lossFunction', 'costFunction', 'input', 'output',
     ];
 
     /**
      * @todo Exception message and status code.
-     * @param array $properties
+     *
+     * @param  array  $properties
      */
     public function __construct(array $properties)
     {
         try {
             foreach ($properties as $key => $value) {
-                if (!property_exists($this, $key)) {
+                if (! property_exists($this, $key)) {
                     Log::warning("Attempt to assign a value to a non-existent key {$key} in NeuronConfiguration.");
+
                     continue;
                 }
                 $method = Str::camel(implode('', ['validate', ucfirst($key)]));
@@ -59,7 +59,7 @@ class NeuronConfiguration extends Configuration implements NeuralNetworkConfigur
                 $this->set($key, $value);
             }
             foreach (self::REQUIRED as $name) {
-                if (!in_array($name, $this->used)) {
+                if (! in_array($name, $this->used)) {
                     throw new InvalidArgumentException();
                 }
             }
@@ -81,7 +81,7 @@ class NeuronConfiguration extends Configuration implements NeuralNetworkConfigur
     /**
      * Training samples quantity
      *
-     * @var int $batch_size > 0; default 16.
+     * @var int > 0; default 16.
      */
     protected int $batch_size = 16;
 
@@ -134,12 +134,14 @@ class NeuronConfiguration extends Configuration implements NeuralNetworkConfigur
 
     /**
      * @todo description
+     *
      * @var LossFunction
      */
     protected LossFunction $lossFunction;
 
     /**
      * @todo description
+     *
      * @var CostFunction
      */
     protected CostFunction $costFunction;

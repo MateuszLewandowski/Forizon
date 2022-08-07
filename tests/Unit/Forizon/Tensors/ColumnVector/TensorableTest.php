@@ -2,22 +2,22 @@
 
 namespace Tests\Unit\Forizon\Tensors\ColumnVector;
 
-use Tests\TestCase;
 use App\Forizon\Tensors\ColumnVector;
+use Tests\TestCase;
 
 class TensorableTest extends TestCase
 {
     private array $data = [
-        1.0, 1.0, 1.0
+        1.0, 1.0, 1.0,
     ];
 
     public function testCreateColumnVectorExpectsSuccess()
     {
         $columnVector = ColumnVector::create($this->data);
         $this->assertTrue(
-            $columnVector instanceof ColumnVector  and
-            $columnVector->length === 3            and
-            $columnVector->rows === 3              and
+            $columnVector instanceof ColumnVector and
+            $columnVector->length === 3 and
+            $columnVector->rows === 3 and
             $columnVector->columns === 1
         );
     }
@@ -26,9 +26,9 @@ class TensorableTest extends TestCase
     {
         $columnVector = ColumnVector::fastCreate($this->data);
         $this->assertTrue(
-            $columnVector instanceof ColumnVector  and
-            $columnVector->length === 3            and
-            $columnVector->rows === 3              and
+            $columnVector instanceof ColumnVector and
+            $columnVector->length === 3 and
+            $columnVector->rows === 3 and
             $columnVector->columns === 1
         );
     }

@@ -3,9 +3,9 @@
 namespace App\Forizon\Core\Configurations\Collections;
 
 use App\Forizon\Abstracts\Core\CollectionConfiguration;
-use Psy\Exception\TypeErrorException;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Psy\Exception\TypeErrorException;
 
 class DatabaseCollectionConfiguration extends CollectionConfiguration
 {
@@ -20,20 +20,21 @@ class DatabaseCollectionConfiguration extends CollectionConfiguration
     /**
      * @todo Exception message and status code.
      *
-     * @param array $properties
+     * @param  array  $properties
      */
     public function __construct(array $properties)
     {
         try {
             foreach ($properties as $key => $value) {
-                if (!property_exists($this, $key)) {
+                if (! property_exists($this, $key)) {
                     Log::warning("Attempt to assign a value to a non-existent key {$key} in CollectionConfiguration.");
+
                     continue;
                 }
                 $this->set($key, $value);
             }
             foreach (self::REQUIRED as $name) {
-                if (!in_array($name, $this->used)) {
+                if (! in_array($name, $this->used)) {
                     throw new InvalidArgumentException();
                 }
             }
@@ -44,7 +45,7 @@ class DatabaseCollectionConfiguration extends CollectionConfiguration
                     break;
                 }
             }
-            if (!$flag) {
+            if (! $flag) {
                 throw new InvalidArgumentException();
             }
             unset($this->used);

@@ -13,21 +13,26 @@ use App\Forizon\Tensors\Matrix;
 class Adagrad implements Optimizer
 {
     public array $memory;
+
     private float $learning_rate;
 
-    public function __construct(float $learning_rate = .001) {
+    public function __construct(float $learning_rate = .001)
+    {
         $this->learning_rate = $learning_rate;
     }
 
-    public function initialize(Attribute $attribute): void {
+    public function initialize(Attribute $attribute): void
+    {
         $class = get_class($attribute->value);
         $this->memory[$attribute->id] = $class::fillZeros(...$attribute->value->shape());
     }
 
-    public function run(string $id, Tensor $tensor): Matrix {
+    public function run(string $id, Tensor $tensor): Matrix
+    {
         $norm = $this->memory[$id];
         $norm = $norm->add($tensor->square());
         $this->memory[$id] = $norm;
+
         return $tensor->multiply($this->learning_rate)->divide($norm->sqrt()->clipLower());
     }
 }

@@ -2,25 +2,25 @@
 
 namespace App\Services\System;
 
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Carbon;
 use App\Abstracts\System\File as AbstractFile;
-use InvalidArgumentException;
+use Illuminate\Support\Carbon;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class File
- * @package App\Services
  */
 final class File extends AbstractFile
 {
     private const DIRECTORY = 'files';
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->timestamp = Carbon::now()->format($this->timestamp_format);
         $this->prefix = 'f';
     }
 
-    public function store(string|array $files, string|array $name, string $extension = 'txt', string $directory = ''): array {
+    public function store(string|array $files, string|array $name, string $extension = 'txt', string $directory = ''): array
+    {
         $store = gettype($files) === 'string' ? [$files] : $files;
         if (empty($store)) {
             return [Response::HTTP_NOT_FOUND, __('app.404', ['attribute' => 'files '])];
@@ -34,6 +34,7 @@ final class File extends AbstractFile
             }
             $stored[] = $result;
         }
+
         return $stored
             ? [Response::HTTP_CREATED, $stored]
             : [Response::HTTP_BAD_REQUEST, ''];

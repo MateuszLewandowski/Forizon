@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Support\Facades\App;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class AuthClosure
 {
@@ -19,7 +19,7 @@ class AuthClosure
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user;
-        App::bind(User::class, function() use ($user) {
+        App::bind(User::class, function () use ($user) {
             return $user;
         });
 

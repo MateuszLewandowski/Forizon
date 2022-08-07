@@ -10,9 +10,11 @@ use App\Forizon\Interfaces\Core\Distance;
 class Minkowski implements Distance
 {
     private float $lambda;
+
     private float $inverse;
 
-    public function __construct(float $lambda = 2.0) {
+    public function __construct(float $lambda = 2.0)
+    {
         if ($lambda < 1.0) {
             //
         }
@@ -20,7 +22,8 @@ class Minkowski implements Distance
         $this->inverse = 1.0 / $lambda;
     }
 
-    public function calc(array $a = [], array $b = []): float {
+    public function calc(array $a = [], array $b = []): float
+    {
         if (count($a) !== count($b)) {
             //
         }
@@ -28,6 +31,7 @@ class Minkowski implements Distance
         foreach ($a as $key => $value) {
             $distance += pow(abs($value - $b[$key]), $this->lambda);
         }
+
         return pow($distance, $this->inverse);
     }
 }

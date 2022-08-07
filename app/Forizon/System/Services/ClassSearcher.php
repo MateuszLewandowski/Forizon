@@ -2,7 +2,6 @@
 
 namespace App\Forizon\System\Services;
 
-use InvalidArgumentException;
 use Illuminate\Support\Facades\File;
 
 /**
@@ -11,9 +10,11 @@ use Illuminate\Support\Facades\File;
 class ClassSearcher
 {
     private string $app_name;
+
     private array $base;
 
-    public function __construct(private string $target, private bool $is_path = false) {
+    public function __construct(private string $target, private bool $is_path = false)
+    {
         // $this->app_name = ucfirst(config('app.name'));
         $this->app_name = 'Forizon';
         $this->is_path = $is_path;
@@ -24,7 +25,8 @@ class ClassSearcher
     /**
      * @return array
      */
-    public function getClasses(): array {
+    public function getClasses(): array
+    {
         $path = $this->covertNamespaceToPath($this->target);
         $files = File::allFiles($path);
         $classes = [];
@@ -39,30 +41,37 @@ class ClassSearcher
                 $classes[$filename] = $this->covertPathToNamespace($class);
             }
         }
+
         return $classes;
     }
 
     /**
      * @return array<ActivationFunction>
      */
-    public function getObjects(): array {
+    public function getObjects(): array
+    {
         $objects = [];
         foreach ($this->getClasses() as $name => $class) {
             $objects[$name] = new $class;
         }
+
         return $objects;
     }
 
-    private function covertNamespaceToPath(string $namespace): string {
+    private function covertNamespaceToPath(string $namespace): string
+    {
         $parts = explode('\\', $namespace);
+
         return implode('/', array_merge($this->base, $parts));
     }
 
-    private function covertPathToNamespace(string $path): string {
+    private function covertPathToNamespace(string $path): string
+    {
         $parts = explode('/', $path);
         foreach ($parts as &$part) {
             $part = ucfirst($part);
         }
+
         return implode('\\', $parts);
     }
 }

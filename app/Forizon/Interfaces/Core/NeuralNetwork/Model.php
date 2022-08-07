@@ -2,6 +2,6 @@
 
 namespace App\Forizon\Interfaces\Core\NeuralNetwork;
 
-interface Model {
-
+interface Model
+{
 }

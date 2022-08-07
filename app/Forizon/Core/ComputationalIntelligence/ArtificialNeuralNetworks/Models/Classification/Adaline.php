@@ -4,6 +4,6 @@ namespace App\Forizon\Core\ComputationalIntelligence\ArtificialNeuralNetworks\Mo
 
 use App\Forizon\Abstracts\ComputationalIntelligence\Neuron;
 
-final class Adaline extends Neuron {
-
+final class Adaline extends Neuron
+{
 }

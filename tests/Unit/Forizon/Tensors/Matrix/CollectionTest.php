@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Forizon\Tensors\Matrix;
 
-use PHPUnit\Framework\TestCase;
-use App\Forizon\Tensors\Matrix;
 use App\Forizon\Tensors\ColumnVector;
+use App\Forizon\Tensors\Matrix;
+use PHPUnit\Framework\TestCase;
 
 class CollectionTest extends TestCase
 {

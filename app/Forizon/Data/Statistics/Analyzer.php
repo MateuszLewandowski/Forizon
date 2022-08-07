@@ -11,9 +11,10 @@ class Analyzer
     /**
      * @todo Validation.
      *
-     * @param Collection $collection
+     * @param  Collection  $collection
      */
-    public function __construct(Collection $collection) {
+    public function __construct(Collection $collection)
+    {
         $this->collection = $collection;
     }
 
@@ -22,7 +23,8 @@ class Analyzer
      *
      * @return array|float
      */
-    public function min(): float {
+    public function min(): float
+    {
         return (float) $this->collection->min();
     }
 
@@ -31,7 +33,8 @@ class Analyzer
      *
      * @return array|float
      */
-    public function max(): float {
+    public function max(): float
+    {
         return (float) $this->collection->max();
     }
 
@@ -40,12 +43,14 @@ class Analyzer
      *
      * @return array
      */
-    public function extremes(bool $keyless = false): array {
+    public function extremes(bool $keyless = false): array
+    {
         if ($keyless) {
             return [
                 $this->min(), $this->max(),
             ];
         }
+
         return [
             'min' => $this->min(),
             'max' => $this->max(),
@@ -55,7 +60,8 @@ class Analyzer
     /**
      * @return float
      */
-    public function mean(): float {
+    public function mean(): float
+    {
         return $this->sum() / $this->count();
     }
 
@@ -64,47 +70,55 @@ class Analyzer
      *
      * @return float
      */
-    public function variance(): float {
+    public function variance(): float
+    {
         $mean = $this->mean();
         $squared = $this->collection->map(function ($value) use ($mean) {
             $subtract = $value - $mean;
+
             return $subtract * $subtract;
         });
+
         return $squared->sum() / $squared->count();
     }
 
     /**
-     * @return integer
+     * @return int
      */
-    public function count(): int {
+    public function count(): int
+    {
         return $this->collection->count();
     }
 
     /**
-     * @return integer
+     * @return int
      */
-    public function uniqueValuesCount(): int {
+    public function uniqueValuesCount(): int
+    {
         return $this->collection->unique()->count();
     }
 
     /**
      * @return float
      */
-    public function median(): float {
+    public function median(): float
+    {
         return $this->collection->median();
     }
 
     /**
      * @return float
      */
-    public function average(): float {
+    public function average(): float
+    {
         return $this->collection->average();
     }
 
     /**
      * @return float
      */
-    public function sum(): float {
+    public function sum(): float
+    {
         return $this->collection->sum();
     }
 }

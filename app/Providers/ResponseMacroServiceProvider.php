@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\{
-    ServiceProvider, Carbon
-};
-use Illuminate\Support\Facades\Response;
-use Illuminate\Http\JsonResponse;
 use App\Services\System\Validation\Response as ResponseValidation;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\ServiceProvider;
 
 class ResponseMacroServiceProvider extends ServiceProvider
 {
@@ -60,5 +59,4 @@ class ResponseMacroServiceProvider extends ServiceProvider
             ], ResponseValidation::httpCode($status), $headers);
         });
     }
-    
 }

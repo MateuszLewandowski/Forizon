@@ -3,27 +3,28 @@
 namespace Tests\Traits\Vector;
 
 use App\Forizon\Abstracts\Tensors\Vector;
-use BadMethodCallException;
 use App\Forizon\Interfaces\Core\Tensor;
+use App\Forizon\Tensors\ColumnVector;
 use App\Forizon\Tensors\Matrix;
 use App\Forizon\Tensors\RowVector;
-use App\Forizon\Tensors\ColumnVector;
+use BadMethodCallException;
 
 trait ComparableMethodAssertTrue
 {
     private $unset = [
-        'test', 'Expects', 'Success', 'Failure'
+        'test', 'Expects', 'Success', 'Failure',
     ];
 
     /**
      * Undocumented function
      *
-     * @param string $function
-     * @param float|null $expected
-     * @param float|null $parameter
+     * @param  string  $function
+     * @param  float|null  $expected
+     * @param  float|null  $parameter
      * @return void
      */
-    private function runComparable(string $function, Vector $first, Tensor|float $second, float $expected, ?float $parameter = null): void {
+    private function runComparable(string $function, Vector $first, Tensor|float $second, float $expected, ?float $parameter = null): void
+    {
         $parts = preg_split('/(?=[A-Z])/', $function);
         foreach ($parts as $key => $part) {
             if (in_array($part, $this->unset)) {
@@ -31,7 +32,7 @@ trait ComparableMethodAssertTrue
             }
         }
         $method = lcfirst(implode('', array_merge($parts, [$this->accessor])));
-        if (!method_exists($first, $method)) {
+        if (! method_exists($first, $method)) {
             throw new BadMethodCallException();
         }
         $result = $parameter !== null

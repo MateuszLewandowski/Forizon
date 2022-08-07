@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 class XavierOneTest extends TestCase
 {
     private int $rows = 32;
+
     private int $columns = 32;
 
     public function testInitializeDefaultMatrixExpectsSuccess()
@@ -29,7 +30,7 @@ class XavierOneTest extends TestCase
     {
         $multiplier = 15;
         $HEInitializer = new XavierOne();
-        $matrix = $HEInitializer->init($this->rows * $multiplier, $this->columns * $multiplier,);
+        $matrix = $HEInitializer->init($this->rows * $multiplier, $this->columns * $multiplier, );
         $flag = true;
         for ($i = 0; $i < $matrix->rows; $i++) {
             for ($j = 0; $j < $matrix->columns; $j++) {

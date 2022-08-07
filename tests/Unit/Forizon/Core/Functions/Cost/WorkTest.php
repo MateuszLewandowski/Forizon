@@ -2,15 +2,18 @@
 
 namespace Tests\Unit\Forizon\Core\Functions\Cost;
 
-use App\Forizon\System\Services\ClassSearcher;
 use App\Forizon\Interfaces\NotImplemented;
+use App\Forizon\System\Services\ClassSearcher;
 use Tests\TestCase;
 
 class WorkTest extends TestCase
 {
     private string $namespace = 'Core\Functions\Cost';
+
     private array $predictions = [.9, .2, .3, .7];
+
     private array $labels = [.9, .2, .31, .71];
+
     private float $cost_range = 1.1;
 
     public function testWorkExpectsSuccess()

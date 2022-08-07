@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Forizon\Tensors\Matrix;
 
-use Tests\TestCase;
 use App\Forizon\Tensors\Matrix;
+use Tests\TestCase;
 
 class TensorableTest extends TestCase
 {
@@ -17,12 +17,13 @@ class TensorableTest extends TestCase
         [1, 2, 3],
         [4, 5, 6],
     ];
+
     public function testCreateMatrixWithSymmetricDataExpectsSuccess()
     {
         $matrix = Matrix::create($this->symmetric_matrix_data);
         $this->assertTrue(
-            $matrix instanceof Matrix   and
-            $matrix->rows === 3         and
+            $matrix instanceof Matrix and
+            $matrix->rows === 3 and
             $matrix->columns === 3
         );
     }
@@ -31,8 +32,8 @@ class TensorableTest extends TestCase
     {
         $matrix = Matrix::create($this->asymmetric_matrix_data);
         $this->assertTrue(
-            $matrix instanceof Matrix   and
-            $matrix->rows === 2         and
+            $matrix instanceof Matrix and
+            $matrix->rows === 2 and
             $matrix->columns === 3
         );
     }
@@ -41,8 +42,8 @@ class TensorableTest extends TestCase
     {
         $matrix = Matrix::fastCreate($this->symmetric_matrix_data);
         $this->assertTrue(
-            $matrix instanceof Matrix   and
-            $matrix->rows === 3         and
+            $matrix instanceof Matrix and
+            $matrix->rows === 3 and
             $matrix->columns === 3
         );
     }
@@ -51,8 +52,8 @@ class TensorableTest extends TestCase
     {
         $matrix = Matrix::fastCreate($this->asymmetric_matrix_data);
         $this->assertTrue(
-            $matrix instanceof Matrix   and
-            $matrix->rows === 2         and
+            $matrix instanceof Matrix and
+            $matrix->rows === 2 and
             $matrix->columns === 3
         );
     }

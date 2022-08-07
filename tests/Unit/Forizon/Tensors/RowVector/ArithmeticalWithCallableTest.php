@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Forizon\Tensors\RowVector;
 
+use App\Forizon\Tensors\RowVector;
 use PHPUnit\Framework\TestCase;
 use Tests\Traits\Vector\CallableMethodAssertTrue;
-use App\Forizon\Tensors\RowVector;
 
 class ArithmeticalWithCallableTest extends TestCase
 {
@@ -12,6 +12,13 @@ class ArithmeticalWithCallableTest extends TestCase
 
     private string $target = Arithmetical::class;
 
-    public function testPowRowVectorExpectsSuccess() { $this->runCallable(RowVector::class, __FUNCTION__, 2); }
-    public function testSqrtRowVectorExpectsSuccess() { $this->runCallable(RowVector::class, __FUNCTION__); }
+    public function testPowRowVectorExpectsSuccess()
+    {
+        $this->runCallable(RowVector::class, __FUNCTION__, 2);
+    }
+
+    public function testSqrtRowVectorExpectsSuccess()
+    {
+        $this->runCallable(RowVector::class, __FUNCTION__);
+    }
 }

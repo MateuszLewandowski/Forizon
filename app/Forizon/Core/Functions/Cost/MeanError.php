@@ -10,7 +10,8 @@ use App\Forizon\Interfaces\Core\Functions\Cost as CostFunction;
  */
 class MeanError implements CostFunction
 {
-    public function evaluate(array $predictions, array $labels): float {
+    public function evaluate(array $predictions, array $labels): float
+    {
         if (count($predictions) !== count($labels)) {
             //
         }
@@ -21,6 +22,7 @@ class MeanError implements CostFunction
         foreach ($predictions as $key => $prediction) {
             $error += $prediction - $labels[$key];
         }
+
         return $error / count($predictions);
     }
 }

@@ -12,10 +12,33 @@ class TrigonometricTest extends TestCase
 
     private string $target = Trigonometric::class;
 
-    public function testSinExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testAsinExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testCosExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testAcosExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testTanExpectsSuccess() { $this->runCallable(__FUNCTION__); }
-    public function testAtanExpectsSuccess() { $this->runCallable(__FUNCTION__); }
+    public function testSinExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testAsinExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testCosExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testAcosExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testTanExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
+
+    public function testAtanExpectsSuccess()
+    {
+        $this->runCallable(__FUNCTION__);
+    }
 }

@@ -10,8 +10,8 @@ class VerifyLanguage
 {
     /**
      * Available languages
-     * 
-     * @var array $available
+     *
+     * @var array
      */
     private array $available = ['pl', 'en'];
 
@@ -25,7 +25,7 @@ class VerifyLanguage
     public function handle(Request $request, Closure $next)
     {
         $lang = $request->header('lang', 'en');
-        App::setLocale(!in_array($lang, $this->available) ? $lang : 'en');
+        App::setLocale(! in_array($lang, $this->available) ? $lang : 'en');
 
         return $next($request);
     }

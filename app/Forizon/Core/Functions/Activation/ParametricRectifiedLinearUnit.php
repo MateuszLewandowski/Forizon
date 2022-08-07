@@ -12,25 +12,32 @@ class ParametricRectifiedLinearUnit implements ActivationFunction
 {
     /**
      * @todo Validation $beta.
-     * @param float $beta
+     *
+     * @param  float  $beta
      */
-    public function __construct(private float $beta = 0.0) {}
+    public function __construct(private float $beta = 0.0)
+    {
+    }
 
-    public function use(Matrix $matrix): Matrix {
+    public function use(Matrix $matrix): Matrix
+    {
         for ($i = 0; $i < $matrix->rows; $i++) {
             for ($j = 0; $j < $matrix->columns; $j++) {
                 $data[$i][$j] = $matrix->data[$i][$j] > 0.0 ? $matrix->data[$i][$j] : $this->beta * $matrix->data[$i][$j];
             }
         }
+
         return new Matrix($data);
     }
 
-    public function derivative(Matrix $input, Matrix $output): Matrix {
+    public function derivative(Matrix $input, Matrix $output): Matrix
+    {
         for ($i = 0; $i < $input->rows; $i++) {
             for ($j = 0; $j < $input->columns; $j++) {
                 $data[$i][$j] = $input->data[$i][$j] > 0.0 ? 1.0 : $this->beta;
             }
         }
+
         return new Matrix($data);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Forizon\Tensors\ColumnVector;
 
-use PHPUnit\Framework\TestCase;
 use App\Forizon\Tensors\ColumnVector;
+use PHPUnit\Framework\TestCase;
 
 class CollectionTest extends TestCase
 {
