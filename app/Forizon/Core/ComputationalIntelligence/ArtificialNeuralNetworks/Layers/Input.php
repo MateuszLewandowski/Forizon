@@ -11,6 +11,7 @@ class Input implements Placeholder
     /**
      * Neurons quantity.
      *
+     * @todo Exception logger
      * @var int
      */
     private int $neurons;
@@ -23,6 +24,7 @@ class Input implements Placeholder
             }
             $this->neurons = $neurons;
         } catch (InvalidArgumentException $e) {
+            throw $e;
         }
     }
 
@@ -57,9 +59,9 @@ class Input implements Placeholder
             if ($matrix->rows !== $this->neurons) {
                 throw new InvalidArgumentException();
             }
-
             return $matrix;
         } catch (InvalidArgumentException $e) {
+            throw $e;
         }
     }
 

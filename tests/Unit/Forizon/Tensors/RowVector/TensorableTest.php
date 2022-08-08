@@ -122,7 +122,7 @@ class TensorableTest extends TestCase
         $rowVector = RowVector::fillGaussian(3);
         $is_filled_gaussian = true;
         foreach ($rowVector->data as $value) {
-            if ($value > 4.0 or $value < -4.0) {
+            if ($value > 5.0 or $value < -5.0) {
                 $is_filled_gaussian = false;
             }
         }

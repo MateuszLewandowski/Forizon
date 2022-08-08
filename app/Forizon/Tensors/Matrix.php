@@ -132,7 +132,7 @@ class Matrix implements Matrixable, Tensor
 
     public function matmul(Matrix $matrix): self
     {
-        TensorValidator::areIdentical($this->shape(), $matrix->shape());
+        TensorValidator::areIdentical($this->columns, $matrix->rows);
         for ($i = 0; $i < $this->rows; $i++) {
             for ($j = 0; $j < $matrix->columns; $j++) {
                 $data[$i][$j] = 0.0;

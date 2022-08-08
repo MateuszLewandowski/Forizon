@@ -9,5 +9,5 @@ interface Optimizer
 {
     public function initialize(Attribute $attribute): void;
 
-    public function run(string $id, Tensor $tensor): Matrix;
+    public function run(string $uuid, Tensor $tensor): Tensor;
 }

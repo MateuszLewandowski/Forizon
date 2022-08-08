@@ -72,19 +72,19 @@ class RowVector extends Vector implements Vectorable, Tensor
      * @throws InvalidArgumentException
      * @throws MethodNotFoundException
      */
-    private function run(string $method, mixed $tensor): self
+    private function run(string $method, mixed $tensor): self|Matrix
     {
         try {
             switch (gettype($tensor)) {
                 case 'object':
                     if ($tensor instanceof Matrix and method_exists($this, $method.'Matrix')) {
-                        $this->{$method.'Matrix'}($tensor);
+                        return $this->{$method.'Matrix'}($tensor);
                     }
                     if ($tensor instanceof ColumnVector and method_exists($this, $method.'ColumnVector')) {
-                        $this->{$method.'ColumnVector'}($tensor);
+                        return $this->{$method.'ColumnVector'}($tensor);
                     }
                     if ($tensor instanceof RowVector and method_exists($this, $method.'RowVector')) {
-                        $this->{$method.'RowVector'}($tensor);
+                        return $this->{$method.'RowVector'}($tensor);
                     }
                 case 'float':
                 case 'double':

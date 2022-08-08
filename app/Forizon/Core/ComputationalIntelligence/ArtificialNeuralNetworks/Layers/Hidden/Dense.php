@@ -9,12 +9,14 @@ use App\Forizon\Interfaces\Data\Initializer;
 use App\Forizon\Parameters\Attribute;
 use App\Forizon\Tensors\Matrix;
 use InvalidArgumentException;
+use Psy\Exception\TypeErrorException;
+use TypeError;
 
 class Dense implements Hidden
 {
-    private Attribute $weights;
+    public Attribute $weights;
 
-    private Attribute $biases;
+    public Attribute $biases;
 
     public function __construct(
         private int $neurons = 32,
@@ -27,11 +29,13 @@ class Dense implements Hidden
             if ($neurons < 1) {
                 throw new InvalidArgumentException();
             }
-            if ($alpha > 1.0) {
+            if ($alpha > 1.0 or $alpha < 0.0) {
                 throw new InvalidArgumentException();
             }
         } catch (InvalidArgumentException $e) {
-            //
+            throw $e;
+        } catch (TypeError $e) {
+            throw $e;
         }
     }
 
@@ -62,10 +66,11 @@ class Dense implements Hidden
             if ($this->is_biased) {
                 $this->biases = new Attribute($this->weightInitializer->init($this->neurons, 1)->asColumnVector());
             }
-
             return $this->neurons;
         } catch (InvalidArgumentException $e) {
-            //
+            throw $e;
+        } catch (TypeError $e) {
+            throw $e;
         }
     }
 
@@ -77,12 +82,20 @@ class Dense implements Hidden
      */
     public function feedForward(Matrix $matrix): Matrix
     {
-        $this->input = $matrix;
-        $output = $this->weights->value->matmul($matrix);
-
-        return $this->is_biased
-            ? $output->add($this->biases->value)
-            : $output;
+        try {
+            if ($matrix->columns !== $this->neurons) {
+                throw new InvalidArgumentException();
+            }
+            $this->input = $matrix;
+            $output = $this->weights->value->matmul($matrix);
+            return $this->is_biased
+                ? $output->add($this->biases->value)
+                : $output;
+        } catch (InvalidArgumentException $e) {
+            throw $e;
+        } catch (TypeError $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -93,11 +106,19 @@ class Dense implements Hidden
      */
     public function touch(Matrix $matrix): Matrix
     {
-        $output = $this->weights->value->matmul($matrix);
-
-        return $this->is_biased
-            ? $output->add($this->biases->value)
-            : $output;
+        try {
+            if ($matrix->columns !== $this->neurons) {
+                throw new InvalidArgumentException();
+            }
+            $output = $this->weights->value->matmul($matrix);
+            return $this->is_biased
+                ? $output->add($this->biases->value)
+                : $output;
+        } catch (InvalidArgumentException $e) {
+            throw $e;
+        } catch (TypeError $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -107,17 +128,21 @@ class Dense implements Hidden
      */
     public function backPropagation(Matrix $gradient, Optimizer $optimizer): Matrix
     {
-        $weightsDerivative = $gradient->matmul($this->input->transpose());
-        $weights = $this->weights->value;
-        if ($this->alpha) {
-            $weightsDerivative = $weightsDerivative->add($weights->multiply($this->alpha));
-        }
-        $this->weights->update($this->weights->value->subtract($optimizer->run($this->weights->uuid, $weightsDerivative)));
-        if ($this->is_biased) {
-            $this->biases->update($this->biases->value->subtract($optimizer->run($this->weights->uuid, $gradient->sum())));
-        }
+        try {
+            $weightsDerivative = $gradient->matmul($this->input->transpose());
+            $weights = $this->weights->value;
+            if ($this->alpha) {
+                $weightsDerivative = $weightsDerivative->add($weights->multiply($this->alpha));
+            }
+            $this->weights->update($this->weights->value->subtract($optimizer->run($this->weights->uuid, $weightsDerivative)));
+            if ($this->is_biased) {
+                $this->biases->update($this->biases->value->subtract($optimizer->run($this->weights->uuid, $gradient->sum())));
+            }
 
-        return $this->determineGradient($weights, $gradient);
+            return $this->determineGradient($weights, $gradient);
+        } catch (TypeError $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -127,6 +152,10 @@ class Dense implements Hidden
      */
     public function determineGradient(Matrix $weights, Matrix $gradient): Matrix
     {
-        return $weights->transpose()->matmul($gradient);
+        try {
+            return $weights->transpose()->matmul($gradient);
+        } catch (TypeError $e) {
+            throw $e;
+        }
     }
 }
