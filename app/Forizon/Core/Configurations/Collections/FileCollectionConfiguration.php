@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Psy\Exception\TypeErrorException;
 
-class DatabaseCollectionConfiguration extends CollectionConfiguration
+class FileCollectionConfiguration extends CollectionConfiguration
 {
     private const REQUIRED = [
         'source', 'column_key', 'column_value',

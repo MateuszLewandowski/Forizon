@@ -48,6 +48,7 @@ class Continous implements Output
 
             return $this->neurons;
         } catch (InvalidArgumentException $e) {
+            throw $e;
         }
     }
 
@@ -59,7 +60,8 @@ class Continous implements Output
      */
     public function feedForward(Matrix $matrix): Matrix
     {
-        return $matrix;
+        $this->input = $matrix;
+        return $this->input;
     }
 
     /**
@@ -70,7 +72,7 @@ class Continous implements Output
      */
     public function touch(Matrix $matrix): Matrix
     {
-        return $this->feedForward($matrix);
+        return $matrix;
     }
 
     /**

@@ -181,9 +181,6 @@ class DenseTest extends TestCase
         $dense->touch(new stdClass);
     }
 
-
-
-
     public function testBackPropagationExpectsSuccess()
     {
         $neurons = mt_rand(1, 25);
@@ -194,6 +191,14 @@ class DenseTest extends TestCase
         $adam->initialize($dense->weights);
         $adam->initialize($dense->biases);
         $dense->backPropagation(Matrix::fillRandom($neurons, $neurons), $adam);
+        $this->assertTrue(true);
+    }
+
+    public function testDetermineGradientExpectsSuccess()
+    {
+        $neurons = mt_rand(1, 25);
+        $dense = new Dense($neurons);
+        $dense->determineGradient(Matrix::fillRandom($neurons, $neurons), Matrix::fillRandom($neurons, $neurons));
         $this->assertTrue(true);
     }
 }
